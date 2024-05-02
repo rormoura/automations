@@ -1,31 +1,27 @@
 import pandas as pd
 import numpy as np
-import tkinter as tk
-from tkinter import filedialog
 
-def browse_file():
-    filename = filedialog.askopenfilename()
-    if filename:
-        label.config(text="Arquivo selecionado: " + filename)
-        return filename
-    else:
-        label.config(text="Nenhum arquivo selecionado")
-        return None
+filePath ="C:/Users/mathe/OneDrive/Área de Trabalho/ESTÁGIO/curvaABC.xlsx" 
+df = pd.read_excel(filePath,index_col=0)
 
-root = tk.Tk()
-root.title("File Browser")
+df["MÉDIA BPS"] = np.nan
+df["MÉDIA TCU"] = np.nan
+df["MÉDIA TCE"] = np.nan
+df["MÉDIA AIQ"] = np.nan
+df["MÉDIA CHAUVENET"] = np.nan
 
-browse_button = tk.Button(root, text="Navegar", command=browse_file)
-browse_button.pack(pady=10)
+df["DISTINTO EM RELAÇÃO À MÉDIA BPS"] = np.nan
+df["DISTINTO EM RELAÇÃO À MÉDIA TCU"] = np.nan
+df["DISTINTO EM RELAÇÃO À MÉDIA TCE"] = np.nan
+df["DISTINTO EM RELAÇÃO À MÉDIA AIQ"] = np.nan
+df["DISTINTO EM RELAÇÃO À MÉDIA CHAUVENET"] = np.nan
 
-label = tk.Label(root, text="")
-label.pack()
+df["ANÁLISE EM RELAÇÃO AO BPS"] = np.nan
+df["ANÁLISE EM RELAÇÃO AO TCU"] = np.nan
+df["ANÁLISE EM RELAÇÃO AO TCE"] = np.nan
+df["ANÁLISE EM RELAÇÃO AO AIQ"] = np.nan
+df["ANÁLISE EM RELAÇÃO AO "] = np.nan
 
-arquivo_selecionado = browse_file()
-
-root.mainloop()
-
-filePath = arquivo_selecionado
-curvaABC = pd.read_excel(filePath,index_col=0)
-print(curvaABC)
+df["OBSERVAÇÕES"] = np.nan
+print(list(df.columns.values))
 
