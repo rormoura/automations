@@ -7,7 +7,7 @@ def browse_file():
     filename = filedialog.askopenfilename()
     if filename:
         label.config(text="Arquivo selecionado: " + filename)
-        return filename  # Retorna o caminho do arquivo selecionado
+        return filename
     else:
         label.config(text="Nenhum arquivo selecionado")
         return None
