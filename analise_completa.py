@@ -23,5 +23,6 @@ df["ANÁLISE EM RELAÇÃO AO AIQ"] = np.nan
 df["ANÁLISE EM RELAÇÃO AO "] = np.nan
 
 df["OBSERVAÇÕES"] = np.nan
-print(list(df.columns.values))
+
+df.to_excel("analiseCompleta.xlsx")
 
