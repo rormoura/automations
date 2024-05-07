@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from utilities.dotAndComma import dotAndComma
 
 def ABCCurve(filePath):
     excelRaw = pd.read_excel(filePath)
@@ -10,7 +11,7 @@ def ABCCurve(filePath):
     df = excelRaw
     ind = np.arange(1, maxNum+1, 1)
 
-    df.insert(6,'VTC', df[df.columns[3]] * df[df.columns[4]])
+    df.insert(6,'VTC', dotAndComma(df[df.columns[3]]) * dotAndComma(df[df.columns[4]]))
     df.insert(7,'PERCENTUAL', df['VTC'] / sum(df['VTC']) * 100)
 
     ABC_curve = df.sort_values(by='PERCENTUAL', ascending=False)
