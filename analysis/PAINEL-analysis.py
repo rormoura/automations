@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from TCE import tce
+from methodologies.TCE import tce
 
 def weighted_average (values, quantities):
     result = 0
