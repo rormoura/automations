@@ -3,6 +3,7 @@ import numpy as np
 from scipy.stats import norm
 
 def chauvenet(df):
+        count = 0
         df = df.to_frame()
         cv = lambda x: np.std(x, ddof=1) / np.mean(x) * 100
         while (cv(df[df.columns[0]]) > 25):
@@ -13,5 +14,7 @@ def chauvenet(df):
                 N = len(df[df.columns[0]])
                 limite_chauvenet = 0.5 / N
                 df = df[df['probabilidade'] >= limite_chauvenet]
-        
+                count = count + 1
+                if(count > 11):
+                        break
         return df[df.columns[0]].mean()
