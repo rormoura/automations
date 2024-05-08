@@ -12,11 +12,11 @@
 
 ## Inside Analysis folder
 
-> BpsBpsAnalysis.py: 
+> BpsBpsAnalysis.py: Receives a csv (.csv) file and returns a 5 element dictionary.
 
-> BpsSiasgAnalysis.py:
+> BpsSiasgAnalysis.py: Receives a csv (.csv) file and returns a 5 element dictionary.
 
-> PanelAnalysis.py:
+> PanelAnalysis.py: Receives an excel (.xlsx) file and returns a 5 element dictionary.
 
 ## Inside MainFiles folder
 

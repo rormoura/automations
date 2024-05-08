@@ -1,13 +1,38 @@
 import pandas as pd
+import numpy as np
 
-def weighted_average (values, quantities):
-    result = 0
-    for i in range(len(values)):
-        result += float(values[i])*quantities[i]
-    return result/sum(quantities);
+from pathlib import Path
+import sys
 
-filePath = "C:/Users/rormo/Downloads/Geral_BPS.csv"
+import methodologies.BPS as BPS
+import methodologies.TCE as TCE
+import methodologies.TCU as TCU
+import methodologies.IQR as IQR
+import methodologies.chauvenet as CHAUVENET
+import utilities.dotAndComma as DOTANDCOMMA
 
-df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
+def bpsBpsAnalysis():
 
-print(weighted_average(list(map(lambda x: x.replace(',', '.'), df[df.columns[18]].tolist())), df[df.columns[17]].tolist()))
+    path_root = Path(__file__).parents[1]
+    sys.path.append(str(path_root))
+
+    dict = {
+        "BPS": np.nan,
+        "TCU": np.nan,
+        "TCE": np.nan,
+        "AIQ": np.nan,
+        "Chauvenet": np.nan
+    }
+
+    filePath = input("Digite o caminho para o arquivo: ")
+
+    df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
+    df[df.columns[18]] = DOTANDCOMMA.dotAndComma(df[df.columns[18]]).astype(float)
+
+    dict['BPS'] = BPS.bps(df[df.columns[18]].tolist())
+    dict['TCU'] = TCU.tcu(df[df.columns[18]].tolist())
+    dict['TCE'] = TCE.tce(df[df.columns[18]].tolist())
+    dict['AIQ'] = IQR.AIQ(df[df.columns[18]])
+    dict['Chauvenet'] = CHAUVENET.chauvenet(df[df.columns[18]])
+        
+    return dict
