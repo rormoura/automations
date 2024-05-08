@@ -1,6 +1,12 @@
 import pandas as pd
 import re
-from methodologies.TCE import tce
+
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
+
+import methodologies.TCE as TCE
 
 def weighted_average (values, quantities):
     result = 0
@@ -26,8 +32,8 @@ if(is_positive_integer(filesNumber)):
         dfs.append(df)
     
     combined_df = pd.concat(dfs, ignore_index=True)
-    #combined_df.to_excel("C:/Users/rormo/Downloads/relatorio_painel_concat.xlsx")
-    print("TCE: "+str(tce(list(map(lambda x: float(x.replace(',', '.')), combined_df['Valor Unitário'].tolist())))))
+    combined_df.to_excel("C:/Users/rormo/Downloads/relatorio_painel_concat.xlsx")
+    print("TCE: "+str(TCE.tce(list(map(lambda x: float(x.replace(',', '.')), combined_df['Valor Unitário'].tolist())))))
     print("Média ponderada: "+str(weighted_average(list(map(lambda x: x.replace(',', '.'), combined_df['Valor Unitário'].tolist())), list(map(lambda x: int(x.replace('.', '')) if ("." in x) else int(x), combined_df['Quantidade Ofertada'])))))
 else:
     print("Número inválido de arquivos. Digite novamente.")
