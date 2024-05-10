@@ -6,12 +6,15 @@ def chauvenet(df):
         df = df.to_frame()
         cv = lambda x: np.std(x, ddof=1) / np.mean(x) * 100
         while (cv(df[df.columns[0]]) > 25):
+
                 mean = df[df.columns[0]].mean()
                 std_dev = df[df.columns[0]].std()
-                df['distancia'] = np.abs(df[df.columns[0]] - mean) / std_dev
-                df['probabilidade'] = 1 - norm.cdf(df['distancia'])
-                N = len(df[df.columns[0]])
-                limite_chauvenet = 0.5 / N
-                df = df[df['probabilidade'] >= limite_chauvenet]
-        
+                normValue = norm.ppf(1-1/(4*len(df[df.columns[0]])))
+
+                minValue = np.abs(mean - (normValue * std_dev))
+                maxValue = mean + (normValue*std_dev)
+
+                df = df[df[df.columns[0]] >= minValue] 
+                df = df[df[df.columns[0]] <= maxValue]
+
         return df[df.columns[0]].mean()
