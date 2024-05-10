@@ -5,9 +5,14 @@ def tcu(lst):
 
     df = pd.Series(lst)
 
-    cv = lambda x: np.std(x, ddof=1) / np.mean(x) * 100  # Coeficiente de variação
-    while cv(df) >= 25:
+    mean = df.mean() #aplciando a limpeza uma vez antes do while
+    std = df.std()
+    df = df[(df >= (mean - std)) & (df <= (mean + std))]
+
+    cv = lambda x: (np.std(x) / np.mean(x)) * 100  #Coeficiente de variação
+
+    while cv(df) > 25:
         mean = df.mean()
         std = df.std()
-        df = df[(df > mean - std) & (df < mean + std)]
+        df = df[(df >= (mean - std)) & (df <= (mean + std))]
     return df.mean()

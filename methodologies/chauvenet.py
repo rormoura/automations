@@ -3,6 +3,7 @@ import numpy as np
 from scipy.stats import norm
 
 def chauvenet(df):
+        count = 0
         df = df.to_frame()
         cv = lambda x: np.std(x, ddof=1) / np.mean(x) * 100
         while (cv(df[df.columns[0]]) > 25):
