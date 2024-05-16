@@ -28,6 +28,7 @@ def bpsBpsAnalysis():
 
     df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
     df[df.columns[18]] = DOTANDCOMMA.dotAndComma(df[df.columns[18]]).astype(float)
+    df = df.sort_values(by=[df.columns[18]], ascending=True)
 
     dict['BPS'] = BPS.bps(df[df.columns[18]].tolist())
     dict['TCU'] = TCU.tcu(df[df.columns[18]].tolist())

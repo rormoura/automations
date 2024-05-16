@@ -28,6 +28,7 @@ def bpsSiasgAnalysis():
 
     df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
     df['Preço Unitário'] = DOTANDCOMMA.dotAndComma(df['Preço Unitário']).astype(float)
+    df = df.sort_values(by=['Preço Unitário'], ascending=True)
 
     dict['BPS'] = BPS.bps(df['Preço Unitário'].tolist())
     dict['TCU'] = TCU.tcu(df['Preço Unitário'].tolist())

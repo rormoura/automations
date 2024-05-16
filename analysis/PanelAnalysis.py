@@ -39,11 +39,15 @@ def panelAnalysis():
             dfs.append(df)
         
         combined_df = pd.concat(dfs, ignore_index=True)
+        combined_df['Valor Unitário'] = DOTANDCOMMA.dotAndComma(combined_df['Valor Unitário'])
+
+        combined_df = combined_df.sort_values(by=['Valor Unitário'], ascending=True)
+        combined_df.to_excel("C:/Users/rormo/Downloads/combined.xlsx")
         dict['BPS'] = np.nan
-        dict['TCU'] = TCU.tcu(DOTANDCOMMA.dotAndComma(combined_df['Valor Unitário']).tolist())
-        dict['TCE'] = TCE.tce(DOTANDCOMMA.dotAndComma(combined_df['Valor Unitário']).tolist())
-        dict['AIQ'] = IQR.AIQ(DOTANDCOMMA.dotAndComma(combined_df['Valor Unitário']))
-        dict['Chauvenet'] = CHAUVENET.chauvenet(DOTANDCOMMA.dotAndComma(combined_df['Valor Unitário']))
+        dict['TCU'] = TCU.tcu(combined_df['Valor Unitário'].tolist())
+        dict['TCE'] = TCE.tce(combined_df['Valor Unitário'].tolist())
+        dict['AIQ'] = IQR.AIQ(combined_df['Valor Unitário'])
+        dict['Chauvenet'] = CHAUVENET.chauvenet(combined_df['Valor Unitário'])
         
         return dict
     else:
