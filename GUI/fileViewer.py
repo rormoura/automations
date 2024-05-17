@@ -1,6 +1,7 @@
 import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, ttk
+from possibleAnalysisFilesui import PossibleAnalysisFilesUI
 
 class FileViewerApp(tk.Tk):
     def __init__(self):
@@ -89,6 +90,9 @@ class FileViewerFrame(tk.Frame):
 
         self.back_button = tk.Button(self, text="Voltar", command=self.back_to_file_selection)
         self.back_button.pack(pady=5)
+
+        self.possible_analysis_files_ui = PossibleAnalysisFilesUI(self)
+        self.possible_analysis_files_ui.pack(pady=100)
 
     def wrap_text(self, text):
         """

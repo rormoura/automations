@@ -13,30 +13,25 @@ import analysis.BpsSiasgAnalysis as SIASG
 import analysis.PanelAnalysis as PANEL
 
 
-class possibleAnalysisFilesUI:
+class PossibleAnalysisFilesUI(tk.Frame):
     def __init__(self, master=None):
-        # build ui
-        tk1 = tk.Tk(master)
-        tk1.configure(height=200, width=200)
+        super().__init__(master)
+        self.master = master
+        self.build_ui()
+
+    def build_ui(self):
         self.possibleAnalysisFiles = ttk.Combobox(
-            tk1, name="possibleanalysisfiles")
-        self.possibleAnalysisFiles.configure(
-            cursor="arrow",
-            exportselection=True,
-            justify="right",
-            state="readonly",
-            takefocus=False,
-            width=40,
-            values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços'))
+            self, name="possibleanalysisfiles", 
+            cursor="arrow", 
+            exportselection=True, 
+            justify="right", 
+            state="readonly", 
+            takefocus=False, 
+            width=40, 
+            values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços')
+        )
         self.possibleAnalysisFiles.pack(side="top")
-        self.possibleAnalysisFiles.bind(
-            "<<ComboboxSelected>>", self.callback, add="")
-
-        # Main widget
-        self.mainwindow = tk1
-
-    def run(self):
-        self.mainwindow.mainloop()
+        self.possibleAnalysisFiles.bind("<<ComboboxSelected>>", self.callback)
 
     def callback(self, event=None):
 
@@ -82,5 +77,7 @@ def print_list(lst):
     return temp_str
 
 if __name__ == "__main__":
-    app = possibleAnalysisFilesUI()
-    app.run()
+    root = tk.Tk()
+    app = PossibleAnalysisFilesUI(master=root)
+    app.pack()
+    root.mainloop()
