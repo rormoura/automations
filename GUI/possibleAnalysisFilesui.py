@@ -2,6 +2,16 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog as fd
 
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
+
+
+import analysis.BpsBpsAnalysis as BPS
+import analysis.BpsSiasgAnalysis as SIASG
+import analysis.PanelAnalysis as PANEL
+
 
 class possibleAnalysisFilesUI:
     def __init__(self, master=None):
@@ -29,6 +39,7 @@ class possibleAnalysisFilesUI:
         self.mainwindow.mainloop()
 
     def callback(self, event=None):
+
         selected_value = self.possibleAnalysisFiles.get()
         if selected_value == "Arquivo .csv modelo BPS" or selected_value == "Arquivo .csv modelo SIASG":
             file_path = fd.askopenfilename(filetypes=[("Arquivos CSV", "*.csv")])
@@ -39,7 +50,8 @@ class possibleAnalysisFilesUI:
                     file_path = fd.askopenfilename(filetypes=[("Arquivos CSV", "*.csv")])
                     msgbox = tk.messagebox.askquestion(title='',message='Arquivo selecionado: '+'\n'+file_path+'\n\n'+'Deseja prosseguir?',icon = 'question')
 
-                print(file_path)
+                if(selected_value== "Arquivo .csv modelo BPS"): return BPS.bpsBpsAnalysis(file_path)
+                if(selected_value== "Arquivo .csv modelo SIASG"): return SIASG.bpsSiasgAnalysis(file_path)
 
         elif selected_value == "Arquivo Excel (.xlsx) modelo Painel de Preços":
             msgbox = 'no'
@@ -59,13 +71,10 @@ class possibleAnalysisFilesUI:
                     if(msgbox == 'no'):
                         file_paths_list = []
                     else:
-                        file_paths_list.sort()
-                        print(file_paths_list)
+                        return PANEL.panelAnalysis(file_paths_list)
                 else:
                     break
             
-
-
 def print_list(lst):
     temp_str = ''
     for elem in lst:

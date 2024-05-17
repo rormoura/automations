@@ -11,7 +11,7 @@ import methodologies.IQR as IQR
 import methodologies.chauvenet as CHAUVENET
 import utilities.dotAndComma as DOTANDCOMMA
 
-def bpsBpsAnalysis():
+def bpsBpsAnalysis(filePath):
 
     path_root = Path(__file__).parents[1]
     sys.path.append(str(path_root))
@@ -23,8 +23,6 @@ def bpsBpsAnalysis():
         "AIQ": np.nan,
         "Chauvenet": np.nan
     }
-
-    filePath = input("Digite o caminho para o arquivo: ")
 
     df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
     df[df.columns[18]] = DOTANDCOMMA.dotAndComma(df[df.columns[18]]).astype(float)
