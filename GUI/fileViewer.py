@@ -1,6 +1,7 @@
 import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, ttk
+import possibleAnalysisFilesui as analysis
 
 class FileViewerApp(tk.Tk):
     def __init__(self):
@@ -20,16 +21,26 @@ class FileSelectionFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        self.file_path_label = tk.Label(self, text="Nenhum arquivo selecionado")
-        self.file_path_label.grid(row=0, column=0, columnspan=2, pady=10, padx=10, sticky="w")
-
         self.browse_button = tk.Button(self, text="Selecionar arquivo", command=self.open_file)
-        self.browse_button.grid(row=1, column=0, pady=5, padx=10)
+        self.browse_button.grid(row=0, column=0, padx=10, pady=10)
 
         self.open_button = tk.Button(self, text="Abrir", command=self.open_file_viewer)
-        self.open_button.grid(row=1, column=1, pady=5, padx=10)
+        self.open_button.grid(row=0, column=1, padx=10, pady=10)
+        
+        self.file_path_label = tk.Label(self, text="Nenhum arquivo selecionado")
+        self.file_path_label.grid(row=0, column=2, padx=10, pady=10)
 
         self.file_path = None
+
+        self.browse_button.grid_columnconfigure(0, weight=1)
+        self.open_button.grid_columnconfigure(1, weight=1)
+        self.file_path_label.grid_columnconfigure(2, weight=1)
+
+        self.line_canvas = tk.Canvas(self, height=2, bg="black")
+        self.line_canvas.grid(row=1, column=0, sticky="ew", columnspan = 3)
+
+        self.grid_columnconfigure(0, weight=1)
+
 
     def open_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx"), ("CSV Files", "*.csv")])
@@ -53,7 +64,8 @@ class FileViewerFrame(tk.Frame):
 
         # Ler o arquivo para um DataFrame
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
-
+        self.analysisUI = analysis.PossibleAnalysisFilesUI(self)
+        self.analysisUI.pack( padx=10, pady=10)
         # Configurar estilos para Treeview
         style = ttk.Style()
         style.configure("Treeview",

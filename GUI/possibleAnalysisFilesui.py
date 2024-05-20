@@ -24,13 +24,14 @@ class PossibleAnalysisFilesUI(tk.Frame):
             self, name="possibleanalysisfiles", 
             cursor="arrow", 
             exportselection=True, 
-            justify="right", 
+            justify="left", 
             state="readonly", 
             takefocus=False, 
             width=40, 
             values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços')
         )
         self.possibleAnalysisFiles.pack(side="top")
+        self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
         self.possibleAnalysisFiles.bind("<<ComboboxSelected>>", self.callback)
 
     def callback(self, event=None):
