@@ -1,7 +1,6 @@
 import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, ttk
-from possibleAnalysisFilesui import PossibleAnalysisFilesUI
 
 class FileViewerApp(tk.Tk):
     def __init__(self):
@@ -10,33 +9,40 @@ class FileViewerApp(tk.Tk):
         self.geometry("800x600")
 
         self.frame1 = FileSelectionFrame(self)
-        self.frame1.pack(fill="both", expand=True)
+        self.frame1.pack(fill="x")
+
+        self.frame2 = None
+
+        self.frame3 = ControlFrame(self)
+        self.frame3.pack(side=tk.BOTTOM, fill="x")
 
 class FileSelectionFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
         self.file_path_label = tk.Label(self, text="Nenhum arquivo selecionado")
-        self.file_path_label.pack(pady=10)
+        self.file_path_label.grid(row=0, column=0, columnspan=2, pady=10, padx=10, sticky="w")
 
         self.browse_button = tk.Button(self, text="Selecionar arquivo", command=self.open_file)
-        self.browse_button.pack(pady=5)
+        self.browse_button.grid(row=1, column=0, pady=5, padx=10)
 
         self.open_button = tk.Button(self, text="Abrir", command=self.open_file_viewer)
-        self.open_button.pack(pady=5)
+        self.open_button.grid(row=1, column=1, pady=5, padx=10)
 
-        self.master = master
+        self.file_path = None
 
     def open_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx"), ("CSV Files", "*.csv")])
-        self.file_path_label.config(text=file_path)
-        self.file_path = file_path
+        if file_path:
+            self.file_path_label.config(text=file_path)
+            self.file_path = file_path
 
     def open_file_viewer(self):
-        if hasattr(self, 'file_path'):
+        if self.file_path:
+            if self.master.frame2:
+                self.master.frame2.destroy()
             self.master.frame2 = FileViewerFrame(self.master, self.file_path)
             self.master.frame2.pack(fill="both", expand=True)
-            self.pack_forget()
 
 class FileViewerFrame(tk.Frame):
     def __init__(self, master, file_path):
@@ -87,13 +93,7 @@ class FileViewerFrame(tk.Frame):
 
         self.tree.tag_configure('oddrow', background='lightgrey')
         self.tree.tag_configure('evenrow', background='white')
-
-        self.back_button = tk.Button(self, text="Voltar", command=self.back_to_file_selection)
-        self.back_button.pack(pady=5)
-
-        self.possible_analysis_files_ui = PossibleAnalysisFilesUI(self)
-        self.possible_analysis_files_ui.pack(pady=100)
-
+        
     def wrap_text(self, text):
         """
         Quebra o texto em múltiplas linhas, quebrando apenas nos espaços.
@@ -114,11 +114,27 @@ class FileViewerFrame(tk.Frame):
         lines.append(line)
         return '\n'.join(lines)
 
-    def back_to_file_selection(self):
-        self.master.frame1.pack(fill="both", expand=True)
-        self.pack_forget()
+class ControlFrame(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.back_button = tk.Button(self, text="Voltar", command=self.go_back)
+        self.back_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+        self.finish_button = tk.Button(self, text="Concluir", command=self.finish)
+        self.finish_button.pack(side=tk.RIGHT, padx=10, pady=10)
+
+    def go_back(self):
+        # Implementar a funcionalidade do botão Voltar
+        if self.master.frame2:
+            self.master.frame2.destroy()
+            self.master.frame2 = None
+
+    def finish(self):
+        # Implementar a funcionalidade do botão Concluir
+        self.master.quit()
+    
 
 if __name__ == "__main__":
     app = FileViewerApp()
     app.mainloop()
-
