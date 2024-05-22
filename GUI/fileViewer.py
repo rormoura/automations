@@ -65,7 +65,7 @@ class FileViewerFrame(tk.Frame):
         # Ler o arquivo para um DataFrame
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
         self.analysisUI = analysis.PossibleAnalysisFilesUI(self)
-        self.analysisUI.pack( padx=10, pady=10)
+        self.analysisUI.pack(side=tk.TOP, padx=10, pady=10)
         # Configurar estilos para Treeview
         style = ttk.Style()
         style.configure("Treeview",
