@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+import os
 from utilities.dotAndComma import dotAndComma
 
-def ABCCurve(filePath):
+def ABCCurve(filePath, pasta_criada):
     excelRaw = pd.read_excel(filePath)
 
     print("Arquivo em excel contendo apenas a tabela na seguinte ordem\n[ITEM] [DISCRIMINAÇÃO] [UNIDADE] [QUANTIDADE] [VALOR UNITÁRIO] [VALOR TOTAL] [PARTICIPAÇÃO]")
@@ -20,5 +21,25 @@ def ABCCurve(filePath):
     ABC_curve.index = ABC_curve.index + 1
     ABC_curve.index.name = "ABC"
 
-    ABC_curve.to_excel('curvaABC.xlsx')
-    ABC_curve.to_csv('curvaABC.csv')
+    ABC_curve["MÉDIA BPS"] = np.nan
+    ABC_curve["MÉDIA TCU"] = np.nan
+    ABC_curve["MÉDIA TCE"] = np.nan
+    ABC_curve["MÉDIA AIQ"] = np.nan
+    ABC_curve["MÉDIA CHAUVENET"] = np.nan
+
+    ABC_curve["% MÉDIA BPS"] = np.nan
+    ABC_curve["% MÉDIA TCU"] = np.nan
+    ABC_curve["% MÉDIA TCE"] = np.nan
+    ABC_curve["% MÉDIA AIQ"] = np.nan
+    ABC_curve["% MÉDIA MÉDIA CHAUVENET"] = np.nan
+
+    ABC_curve["ANÁLISE BPS"] = np.nan
+    ABC_curve["ANÁLISE TCU"] = np.nan
+    ABC_curve["ANÁLISE TCE"] = np.nan
+    ABC_curve["ANÁLISE AIQ"] = np.nan
+    ABC_curve["ANÁLISE CHAUVENET"] = np.nan
+
+    ABC_curve["OBSERVAÇÕES"] = np.nan
+
+    caminho_novo_arquivo = os.path.join(pasta_criada, 'Análise Completa.xlsx')
+    ABC_curve.to_excel(caminho_novo_arquivo)

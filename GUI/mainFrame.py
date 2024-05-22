@@ -5,52 +5,12 @@ import pandas as pd
 import numpy as np
 import os
 
-def dotAndComma (df):
-    if(df.dtype == object):
-        df = df.apply(lambda x: float(x.replace('.', '')) if ('.' in x) else x)
-        df = df.apply(lambda x: float(x.replace(',', '.')) if (',' in x) else x)
-    return df
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
 
-def ABCCurve(filePath):
-    excelRaw = pd.read_excel(filePath)
-
-    print("Arquivo em excel contendo apenas a tabela na seguinte ordem\n[ITEM] [DISCRIMINAÇÃO] [UNIDADE] [QUANTIDADE] [VALOR UNITÁRIO] [VALOR TOTAL] [PARTICIPAÇÃO]")
-    maxNum = len(excelRaw)-1
-
-    df = excelRaw
-    ind = np.arange(1, maxNum+1, 1)
-
-    df.insert(6,'VTC', dotAndComma(df[df.columns[3]]) * dotAndComma(df[df.columns[4]]))
-    df.insert(7,'PERCENTUAL', df['VTC'] / sum(df['VTC']) * 100)
-
-    ABC_curve = df.sort_values(by='PERCENTUAL', ascending=False)
-    ABC_curve = ABC_curve.reset_index(drop=True)
-
-    ABC_curve.index = ABC_curve.index + 1
-    ABC_curve.index.name = "ABC"
-
-    df["MÉDIA BPS"] = np.nan
-    df["MÉDIA TCU"] = np.nan
-    df["MÉDIA TCE"] = np.nan
-    df["MÉDIA AIQ"] = np.nan
-    df["MÉDIA CHAUVENET"] = np.nan
-
-    df["DISTINTO EM RELAÇÃO À MÉDIA BPS"] = np.nan
-    df["DISTINTO EM RELAÇÃO À MÉDIA TCU"] = np.nan
-    df["DISTINTO EM RELAÇÃO À MÉDIA TCE"] = np.nan
-    df["DISTINTO EM RELAÇÃO À MÉDIA AIQ"] = np.nan
-    df["DISTINTO EM RELAÇÃO À MÉDIA CHAUVENET"] = np.nan
-
-    df["ANÁLISE EM RELAÇÃO AO BPS"] = np.nan
-    df["ANÁLISE EM RELAÇÃO AO TCU"] = np.nan
-    df["ANÁLISE EM RELAÇÃO AO TCE"] = np.nan
-    df["ANÁLISE EM RELAÇÃO AO AIQ"] = np.nan
-    df["ANÁLISE EM RELAÇÃO AO "] = np.nan
-
-    df["OBSERVAÇÕES"] = np.nan
-
-    caminho_novo_arquivo = os.path.join(pasta_criada, 'olha a curva.xlsx')
-    ABC_curve.to_excel(caminho_novo_arquivo)
+from mainFiles.ABCCurve import ABCCurve
 
 def buscar_arquivo():
     filename = filedialog.askopenfilename(title="Selecione um arquivo", filetypes=[("Arquivos Excel", "*.xlsx")])
@@ -68,7 +28,7 @@ def proximo():
     global arquivo_selecionado, pasta_criada, pasta_selecionada
     aviso = ""
     if ((arquivo_selecionado != None) & (pasta_criada != None)):
-        ABCCurve(arquivo_selecionado)
+        ABCCurve(arquivo_selecionado, pasta_criada)
         aviso = "prosseguiu 1"
     elif (pasta_selecionada != None):
         aviso = "prosseguiu 2"
