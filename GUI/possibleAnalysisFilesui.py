@@ -112,7 +112,8 @@ class PossibleAnalysisFilesUI(tk.Frame):
             self.send_button.config(state='disabled')
 
     def handle_send_button(self):
-        print("xing")
+        self.item_entry.delete(0, tk.END)
+        self.handle_leave(self)
 
 
 if __name__ == "__main__":
