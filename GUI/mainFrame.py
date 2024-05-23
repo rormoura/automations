@@ -12,108 +12,95 @@ sys.path.append(str(path_root))
 
 from mainFiles.ABCCurve import ABCCurve
 
-def buscar_arquivo():
-    filename = filedialog.askopenfilename(title="Selecione um arquivo", filetypes=[("Arquivos Excel", "*.xlsx")])
-    if filename:
-        arquivo_selecionado_label.config(text="Arquivo selecionado: " + os.path.basename(filename))
-        global arquivo_selecionado
-        arquivo_selecionado = filename
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Interface com Tkinter")
+        self.root.geometry("600x400")
 
-def abrir_tutorial():
-    # Adicione aqui a lógica para abrir um tutorial
-    messagebox.showinfo("Tutorial", "Este é o tutorial")
+        self.arquivo_selecionado = None
+        self.pasta_selecionada = None
+        self.pasta_criada = None
 
-def proximo():
-    global arquivo_selecionado, pasta_criada, pasta_selecionada
-    aviso = ""
-    if ((arquivo_selecionado != None) & (pasta_criada != None)):
-        ABCCurve(arquivo_selecionado, pasta_criada)
-        aviso = "prosseguiu 1"
-    elif (pasta_selecionada != None):
-        aviso = "prosseguiu 2"
-    elif ((pasta_criada == None)|(arquivo_selecionado == None)):
+        # Criando o frame para o botão de criar pasta e o campo de entrada
+        self.frame_criar_pasta = tk.Frame(self.root)
+        self.frame_criar_pasta.pack(pady=30)
 
-        if((pasta_criada == None) & (arquivo_selecionado == None)):
-            aviso = "Para iniciar uma nova pesquisa:\n * selecione um arquivo" \
-            " e crie uma nova pasta\n\nPara continuar de onde parou:\n * selecione a pasta da pesquisa em andamento"
+        # Label "Iniciar nova Pesquisa"
+        self.lbl_iniciar_pesquisa = tk.Label(self.frame_criar_pasta, text="Iniciar nova Pesquisa:", font=("Helvetica", 16))
+        self.lbl_iniciar_pesquisa.grid(row=0, column=0, columnspan=3, pady=10)
 
-    messagebox.showwarning("aviso", aviso)
+        # Rótulo para indicar o campo de entrada
+        self.lbl_nome_pasta = tk.Label(self.frame_criar_pasta, text="Nome para pasta do edital:")
+        self.lbl_nome_pasta.grid(row=1, column=0, columnspan=3, pady=5)
 
-def selecionar_pasta():
-    global pasta_selecionada
-    global pasta_criada
-    if (pasta_criada == None) & (pasta_selecionada == None):
-        nome_pasta = filedialog.askdirectory(title="Selecione o diretório para criar a pasta")
-        status_label.config(text=f"Pasta '{os.path.basename(nome_pasta)} selecionada!")
-        pasta_selecionada = nome_pasta
-    else:
-        status_label.config(text=f"A pasta que você criou já foi selecionada")
+        # Botão para buscar arquivo
+        self.btn_buscar_arquivo = tk.Button(self.frame_criar_pasta, text="Buscar Arquivo", command=self.buscar_arquivo)
+        self.btn_buscar_arquivo.grid(row=2, column=0, padx=10)
 
-def criar_pasta():
-    nome_pasta = entrada_nome_pasta.get()
-    pasta_destino = filedialog.askdirectory(title="Selecione o diretório para criar a pasta")
-    if nome_pasta and pasta_destino:
-        caminho_completo = os.path.join(pasta_destino, nome_pasta)
-        if not os.path.exists(caminho_completo):
-            os.makedirs(caminho_completo)
-            status_label.config(text=f"Pasta '{nome_pasta}' criada com sucesso!")
-            global pasta_criada
-            pasta_criada = nome_pasta
+        # Campo de entrada para o nome da pasta
+        self.entrada_nome_pasta = tk.Entry(self.frame_criar_pasta, width=30)
+        self.entrada_nome_pasta.grid(row=2, column=1, padx=10)
+
+        # Botão para criar a pasta
+        self.btn_criar_pasta = tk.Button(self.frame_criar_pasta, text="Criar Pasta", command=self.criar_pasta)
+        self.btn_criar_pasta.grid(row=2, column=2, padx=10)
+
+        # Criando o frame para continuar pesquisa em andamento
+        self.frame_continuar_pesquisa = tk.Frame(self.root)
+        self.frame_continuar_pesquisa.pack(pady=30)
+
+        # Label "Continuar pesquisa em andamento"
+        self.lbl_continuar_pesquisa = tk.Label(self.frame_continuar_pesquisa, text="Continuar pesquisa em andamento:", font=("Helvetica", 16))
+        self.lbl_continuar_pesquisa.pack(pady=10)
+
+        # Botão "Selecionar Pasta"
+        self.btn_continuar = tk.Button(self.frame_continuar_pesquisa, text="Selecionar Pasta", command=self.selecionar_pasta)
+        self.btn_continuar.pack(pady=10)
+
+        # Botão "Próximo"
+        self.btn_proximo = tk.Button(self.root, text="Próximo", command=self.proximo)
+        self.btn_proximo.pack(side=tk.BOTTOM, pady=20)
+
+    def buscar_arquivo(self):
+        filename = filedialog.askopenfilename(title="Selecione um arquivo", filetypes=[("Arquivos Excel", "*.xlsx")])
+        if filename:
+            self.arquivo_selecionado = filename
+
+    def selecionar_pasta(self):
+        if self.pasta_criada is None and self.pasta_selecionada is None:
+            nome_pasta = filedialog.askdirectory(title="Selecione o diretório para criar a pasta")
+            self.pasta_selecionada = nome_pasta
+
+
+    def criar_pasta(self):
+        nome_pasta = self.entrada_nome_pasta.get()
+        pasta_destino = filedialog.askdirectory(title="Selecione o diretório para criar a pasta")
+        if nome_pasta and pasta_destino:
+            caminho_completo = os.path.join(pasta_destino, nome_pasta)
+            if not os.path.exists(caminho_completo):
+                os.makedirs(caminho_completo)
+                messagebox.showinfo("Sucesso","Pasta criada com sucesso!")
+                self.pasta_criada = nome_pasta
+            else:
+                messagebox.showinfo("Erro", "Pasta já existe nesse diretório, escolha outro nome!")
         else:
-            status_label.config(text=f"Pasta '{nome_pasta}' já existe nesse diretório, escolha outro nome!")
+            messagebox.showinfo("Erro", "Defina um nome para a pasta!")
+    def proximo(self):
+        aviso = ""
+        if self.arquivo_selecionado and self.pasta_criada:
+            ABCCurve(self.arquivo_selecionado, self.pasta_criada)
+            aviso = "prosseguiu 1"
+        elif self.pasta_selecionada:
+            aviso = "prosseguiu 2"
+        else:
+            if not self.pasta_criada and not self.arquivo_selecionado:
+                aviso = ("Para iniciar uma nova pesquisa:\n * selecione um arquivo"
+                         " e crie uma nova pasta\n\nPara continuar de onde parou:\n * selecione a pasta da pesquisa em andamento")
 
-# Criando a janela principal
+        if aviso:
+            messagebox.showinfo("Aviso", aviso)
+
 root = tk.Tk()
-root.title("Interface com Tkinter")
-root.geometry("800x600")
-
-arquivo_selecionado = None
-pasta_selecionada = None
-pasta_criada = None
-
-# Criando o frame para os botões superiores
-frame_superior = tk.Frame(root)
-frame_superior.pack(pady=20)
-
-# Botão para buscar arquivo
-btn_buscar_arquivo = tk.Button(frame_superior, text="Buscar Arquivo", command=buscar_arquivo)
-btn_buscar_arquivo.grid(row=0, column=0, padx=10)
-
-# Botão "Continuar de onde parei"
-btn_continuar = tk.Button(frame_superior, text="selecionar_pasta", command=selecionar_pasta)
-btn_continuar.grid(row=0, column=1, padx=10)
-
-# Botão para abrir tutorial
-btn_abrir_tutorial = tk.Button(frame_superior, text="Tutorial", command=abrir_tutorial)
-btn_abrir_tutorial.grid(row=0, column=2, padx=10)
-
-# Criando o frame para o botão de criar pasta e o campo de entrada
-frame_criar_pasta = tk.Frame(root)
-frame_criar_pasta.pack(pady=30)
-
-
-# Rótulo para indicar o campo de entrada
-lbl_nome_pasta = tk.Label(frame_criar_pasta, text="Nome para pasta do edital:")
-lbl_nome_pasta.grid(row=0, column=0)
-
-# Campo de entrada para o nome da pasta
-entrada_nome_pasta = tk.Entry(frame_criar_pasta, width=30)
-entrada_nome_pasta.grid(row=1, column=0, padx=10)
-
-# Botão para criar a pasta
-btn_criar_pasta = tk.Button(frame_criar_pasta, text="Criar Pasta", command=criar_pasta)
-btn_criar_pasta.grid(row=1, column=1, padx=10)
-
-# Rótulo para exibir status da criação da pasta
-status_label = tk.Label(root, text="")
-status_label.pack(pady=20)
-
-# Rótulo para exibir o arquivo selecionado
-arquivo_selecionado_label = tk.Label(root, text="Nenhum arquivo selecionado")
-arquivo_selecionado_label.pack(pady=20)
-
-# Botão "Próximo"
-btn_proximo = tk.Button(root, text="Próximo", command=proximo)
-btn_proximo.pack(side=tk.BOTTOM, pady=20)
-
+app = App(root)
 root.mainloop()
