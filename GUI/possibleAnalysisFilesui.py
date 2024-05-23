@@ -20,21 +20,34 @@ class PossibleAnalysisFilesUI(tk.Frame):
         self.build_ui()
 
     def build_ui(self):
+        self.item_entry_label = tk.Label(self, text="Digite o número do item:")
+        self.item_entry_label.grid(row=0, column=0, padx=2)
+
+        vcmd = (self.register(self.validate_digit), '%P')
+
+        self.item_entry = tk.Entry(self, validate='key', validatecommand=vcmd)
+        self.item_entry.grid(row=0, column=1)
+
         self.possibleAnalysisFiles = ttk.Combobox(
             self, name="possibleanalysisfiles", 
             cursor="arrow", 
             exportselection=True, 
             justify="left", 
-            state="readonly", 
+            state="disabled", 
             takefocus=False, 
             width=40, 
             values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços')
         )
-        self.possibleAnalysisFiles.pack(side="top")
+        self.possibleAnalysisFiles.grid(row=0, column=2, padx=80)
         self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
-        self.possibleAnalysisFiles.bind("<<ComboboxSelected>>", self.callback)
+        self.possibleAnalysisFiles.bind("<<ComboboxSelected>>", self.callbackComboBox)
 
-    def callback(self, event=None):
+        self.send_button = tk.Button(self, text="Enviar Pesquisa de Preço", command=self.handle_send_button, state='disabled')
+        self.send_button.grid(row=0, column=3, padx=10)
+
+        self.item_entry.bind('<Leave>', self.handle_leave)
+
+    def callbackComboBox(self, event=None):
 
         selected_value = self.possibleAnalysisFiles.get()
         if selected_value == "Arquivo .csv modelo BPS" or selected_value == "Arquivo .csv modelo SIASG":
@@ -46,8 +59,12 @@ class PossibleAnalysisFilesUI(tk.Frame):
                     file_path = fd.askopenfilename(filetypes=[("Arquivos CSV", "*.csv")])
                     msgbox = tk.messagebox.askquestion(title='',message='Arquivo selecionado: '+'\n'+file_path+'\n\n'+'Deseja prosseguir?',icon = 'question')
 
-                if(selected_value== "Arquivo .csv modelo BPS"): return BPS.bpsBpsAnalysis(file_path)
-                if(selected_value== "Arquivo .csv modelo SIASG"): return SIASG.bpsSiasgAnalysis(file_path)
+                if(selected_value== "Arquivo .csv modelo BPS"):
+                    print(BPS.bpsBpsAnalysis(file_path))
+                    self.send_button.config(state='normal')
+                if(selected_value== "Arquivo .csv modelo SIASG"):
+                    print(SIASG.bpsSiasgAnalysis(file_path))
+                    self.send_button.config(state='normal')
 
         elif selected_value == "Arquivo Excel (.xlsx) modelo Painel de Preços":
             msgbox = 'no'
@@ -55,27 +72,49 @@ class PossibleAnalysisFilesUI(tk.Frame):
                 file_paths = fd.askopenfilenames(filetypes=[("Arquivos Excel", "*.xlsx")])
                 if(file_paths):
                     file_paths_list = list(file_paths)
-                    msgbox = tk.messagebox.askquestion(title='',message='Arquivos selecionados: '+'\n'+print_list(file_paths_list)+'\n\n'+'Deseja adicionar mais algum arquivo?',icon = 'question')
+                    msgbox = tk.messagebox.askquestion(title='',message='Arquivos selecionados: '+'\n'+self.print_list(file_paths_list)+'\n\n'+'Deseja adicionar mais algum arquivo?',icon = 'question')
 
                     while(msgbox == 'yes'):
                         file_paths = fd.askopenfilenames(filetypes=[("Arquivos Excel", "*.xlsx")])
                         file_paths_list = file_paths_list + list(file_paths)
                         file_paths_list = list(dict.fromkeys(file_paths_list))
-                        msgbox = tk.messagebox.askquestion(title='',message='Arquivos selecionados: '+'\n'+print_list(file_paths_list)+'\n\n'+'Deseja adicionar mais algum arquivo?',icon = 'question')
+                        msgbox = tk.messagebox.askquestion(title='',message='Arquivos selecionados: '+'\n'+self.print_list(file_paths_list)+'\n\n'+'Deseja adicionar mais algum arquivo?',icon = 'question')
 
-                    msgbox = tk.messagebox.askquestion(title='',message='Seleção de arquivos total: '+'\n'+print_list(file_paths_list)+'\n\n'+'Deseja prosseguir?',icon = 'question')
+                    msgbox = tk.messagebox.askquestion(title='',message='Seleção de arquivos total: '+'\n'+self.print_list(file_paths_list)+'\n\n'+'Deseja prosseguir?',icon = 'question')
                     if(msgbox == 'no'):
                         file_paths_list = []
                     else:
-                        return PANEL.panelAnalysis(file_paths_list)
+                        print(PANEL.panelAnalysis(file_paths_list))
+                        self.send_button.config(state='normal')
                 else:
                     break
-            
-def print_list(lst):
-    temp_str = ''
-    for elem in lst:
-        temp_str = temp_str+str(elem)+'\n'
-    return temp_str
+
+
+    def validate_digit(self, P):
+        if P.isdigit() or P == "":
+            return True
+        else:
+            return False
+    
+    def print_list(lst):
+        temp_str = ''
+        for elem in lst:
+            temp_str = temp_str+str(elem)+'\n'
+        return temp_str
+
+    def handle_leave(self, event):
+        if(self.item_entry.get() != ""):
+            self.possibleAnalysisFiles.config(state="readonly")
+            self.send_button.config(state='disabled')
+        else:
+            self.possibleAnalysisFiles.config(state="disabled")
+            self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
+            self.send_button.config(state='disabled')
+
+    def handle_send_button(self):
+        self.item_entry.delete(0, tk.END)
+        self.handle_leave(self)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
