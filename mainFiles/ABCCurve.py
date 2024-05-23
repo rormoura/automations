@@ -4,12 +4,10 @@ import os
 from utilities.dotAndComma import dotAndComma
 
 def ABCCurve(filePath, pasta_criada):
-    excelRaw = pd.read_excel(filePath)
+    df = pd.read_excel(filePath)
 
     print("Arquivo em excel contendo apenas a tabela na seguinte ordem\n[ITEM] [DISCRIMINAÇÃO] [UNIDADE] [QUANTIDADE] [VALOR UNITÁRIO] [VALOR TOTAL] [PARTICIPAÇÃO]")
-    maxNum = len(excelRaw)-1
-
-    df = excelRaw
+    maxNum = len(df)-1
     ind = np.arange(1, maxNum+1, 1)
 
     df.insert(6,'VTC', dotAndComma(df[df.columns[3]]) * dotAndComma(df[df.columns[4]]))
@@ -42,4 +40,5 @@ def ABCCurve(filePath, pasta_criada):
     ABC_curve["OBSERVAÇÕES"] = np.nan
 
     caminho_novo_arquivo = os.path.join(pasta_criada, 'Análise Completa.xlsx')
+    print(caminho_novo_arquivo)
     ABC_curve.to_excel(caminho_novo_arquivo)

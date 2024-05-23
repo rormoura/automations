@@ -18,11 +18,10 @@ def buscar_arquivo():
         arquivo_selecionado_label.config(text="Arquivo selecionado: " + os.path.basename(filename))
         global arquivo_selecionado
         arquivo_selecionado = filename
-        print(arquivo_selecionado)
 
 def abrir_tutorial():
     # Adicione aqui a lógica para abrir um tutorial
-    print("Abrir tutorial")
+    messagebox.showinfo("Tutorial", "Este é o tutorial")
 
 def proximo():
     global arquivo_selecionado, pasta_criada, pasta_selecionada
