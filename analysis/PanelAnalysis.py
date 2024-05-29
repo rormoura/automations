@@ -24,6 +24,8 @@ def panelAnalysis(filesPaths):
     dfs = []
     for filePath in filesPaths:
         df = pd.read_excel(filePath, skiprows=4, converters={'Quantidade Ofertada': str})
+        df['Quantidade Ofertada'] = df['Quantidade Ofertada'].apply(lambda x: x.replace('.', '') if ('.' in x) else x)
+        df['Quantidade Ofertada'] = df['Quantidade Ofertada'].astype(float)
         dfs.append(df)
     
     combined_df = pd.concat(dfs, ignore_index=True)
