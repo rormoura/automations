@@ -37,3 +37,7 @@
 > IQR function: Receives a float pandas series and returns a float number.
 
 > Chauvenet function: Receives a float pandas series and returns a float number.
+
+## Inside Utilities folder
+
+> dotAndComma function: Receives a dataframe column and returns a dataframe column. It assumes that there are no '.' for thousands separator, then replaces any ',' with '.'.
