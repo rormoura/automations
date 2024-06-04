@@ -31,7 +31,7 @@ class App:
         # Label com a instrução sobre o arquivo Excel
         self.lbl_instrucao = tk.Label(self.frame_criar_pasta, text=("Arquivo em excel deve conter todas as colunas na seguinte ordem:\n\n"
                                                                     "(Item, Discriminação, Unid, Quant, "
-                                                                    "Valor Unit, tValor total,Participação)"), font=("Helvetica", 10))
+                                                                    "Valor Unit, Valor Total, Participação)"), font=("Helvetica", 10))
         self.lbl_instrucao.grid(row=1, column=0, columnspan=3, pady=5)
 
         # Rótulo para indicar o campo de entrada
