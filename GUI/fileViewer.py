@@ -106,14 +106,17 @@ class DataViewerFrame(tk.Frame):
 
         # Insert updated rows
         for i, row in self.data_frame.iterrows():
-            values = [self.wrap_text(str(value)) for value in row]
-            tag = 'oddrow' if i % 2 == 0 else 'evenrow'
-            if(i == 3):
-                print(values)
+            values = [value for value in row]
+            values[2] = self.wrap_text(str(values[2]))
+            if(str(values[12]) != 'nan'):
+                tag = 'chosen'
+            else:
+                tag = 'oddrow' if i % 2 == 0 else 'evenrow'
             self.tree.insert("", "end", values=values, tags=(tag,))
 
         self.tree.tag_configure('oddrow', background='lightgrey')
         self.tree.tag_configure('evenrow', background='white')
+        self.tree.tag_configure('chosen', background='lightgreen')
 
     def wrap_text(self, text):
         width = 60 if len(text) < 60 else len(text) / 2
