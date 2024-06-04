@@ -47,3 +47,4 @@ def ABCCurve(filePath, pasta_criada):
     caminho_novo_arquivo = os.path.join(pasta_criada, 'Análise Completa.xlsx')
     print(caminho_novo_arquivo)
     ABC_curve.to_excel(caminho_novo_arquivo)
+    return caminho_novo_arquivo
