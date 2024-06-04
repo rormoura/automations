@@ -18,7 +18,7 @@ def ABCCurve(filePath, pasta_criada):
     df.insert(7,'PERCENTUAL', df['VTC'] / sum(df['VTC']) * 100)
     df['PERCENTUAL'] = df['PERCENTUAL'].round(2)
 
-    ABC_curve = df.sort_values(by='PERCENTUAL', ascending=False)
+    ABC_curve = df.sort_values(by='VTC', ascending=False)
     ABC_curve = ABC_curve.reset_index(drop=True)
 
     ABC_curve.index = ABC_curve.index + 1
