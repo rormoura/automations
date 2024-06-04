@@ -39,6 +39,7 @@ class FileViewerFrame(tk.Frame):
             if self.frame1 is not None:
                 self.frame1.destroy()
             self.frame1 = DataViewerFrame(self, arquivo_selecionado)
+            #self.frame1.bind("<<ItemChosen>>", self.frame1.item_chosen)
             self.grid_frames()
             print(arquivo_selecionado)
         elif pasta_selecionada:
@@ -48,7 +49,7 @@ class DataViewerFrame(tk.Frame):
     def __init__(self, master, file_path):
         super().__init__(master)
         self.file_path = file_path
-
+        self.bind("<<ItemChosen>>", self.item_chosen)
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
         self.analysisUI = analysis.PossibleAnalysisFilesUI(self)
         self.analysisUI.pack(side=tk.TOP, padx=10, pady=10)
@@ -84,6 +85,31 @@ class DataViewerFrame(tk.Frame):
         for i, row in self.data_frame.iterrows():
             values = [self.wrap_text(str(value)) for value in row]
             tag = 'oddrow' if i % 2 == 0 else 'evenrow'
+            self.tree.insert("", "end", values=values, tags=(tag,))
+
+        self.tree.tag_configure('oddrow', background='lightgrey')
+        self.tree.tag_configure('evenrow', background='white')
+
+    def item_chosen(self, event):
+        self.data_frame.loc[self.data_frame['ITEM'] == int(self.analysisUI.chosen_item), 'MÉDIA BPS'] = self.analysisUI.medians_dict['BPS']
+        self.data_frame.loc[self.data_frame['ITEM'] == int(self.analysisUI.chosen_item), 'MÉDIA TCU'] = self.analysisUI.medians_dict['TCU']
+        self.data_frame.loc[self.data_frame['ITEM'] == int(self.analysisUI.chosen_item), 'MÉDIA TCE'] = self.analysisUI.medians_dict['TCE']
+        self.data_frame.loc[self.data_frame['ITEM'] == int(self.analysisUI.chosen_item), 'MÉDIA AIQ'] = self.analysisUI.medians_dict['AIQ']
+        self.data_frame.loc[self.data_frame['ITEM'] == int(self.analysisUI.chosen_item), 'MÉDIA CHAUVENET'] = self.analysisUI.medians_dict['Chauvenet']
+        self.data_frame.to_excel(self.file_path, index=False)
+        self.refresh_treeview()
+
+    def refresh_treeview(self):
+        # Remove all current rows in the treeview
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        # Insert updated rows
+        for i, row in self.data_frame.iterrows():
+            values = [self.wrap_text(str(value)) for value in row]
+            tag = 'oddrow' if i % 2 == 0 else 'evenrow'
+            if(i == 3):
+                print(values)
             self.tree.insert("", "end", values=values, tags=(tag,))
 
         self.tree.tag_configure('oddrow', background='lightgrey')

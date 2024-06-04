@@ -14,7 +14,7 @@ import analysis.PanelAnalysis as PANEL
 
 
 class PossibleAnalysisFilesUI(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master):
         super().__init__(master)
         self.master = master
         self.build_ui()
@@ -60,10 +60,10 @@ class PossibleAnalysisFilesUI(tk.Frame):
                     msgbox = tk.messagebox.askquestion(title='',message='Arquivo selecionado: '+'\n'+file_path+'\n\n'+'Deseja prosseguir?',icon = 'question')
 
                 if(selected_value== "Arquivo .csv modelo BPS"):
-                    print(BPS.bpsBpsAnalysis(file_path))
+                    self.medians_dict = BPS.bpsBpsAnalysis(file_path)
                     self.send_button.config(state='normal')
                 if(selected_value== "Arquivo .csv modelo SIASG"):
-                    print(SIASG.bpsSiasgAnalysis(file_path))
+                    self.medians_dict = SIASG.bpsSiasgAnalysis(file_path)
                     self.send_button.config(state='normal')
 
         elif selected_value == "Arquivo Excel (.xlsx) modelo Painel de Preços":
@@ -84,7 +84,7 @@ class PossibleAnalysisFilesUI(tk.Frame):
                     if(msgbox == 'no'):
                         file_paths_list = []
                     else:
-                        print(PANEL.panelAnalysis(file_paths_list))
+                        self.medians_dict = PANEL.panelAnalysis(file_paths_list)
                         self.send_button.config(state='normal')
                 else:
                     break
@@ -112,8 +112,12 @@ class PossibleAnalysisFilesUI(tk.Frame):
             self.send_button.config(state='disabled')
 
     def handle_send_button(self):
+        self.possibleAnalysisFiles.config(state="disabled")
+        self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
+        self.send_button.config(state='disabled')
+        self.chosen_item = self.item_entry.get()
         self.item_entry.delete(0, tk.END)
-        self.handle_leave(self)
+        self.master.event_generate("<<ItemChosen>>")
 
 
 if __name__ == "__main__":
