@@ -15,8 +15,6 @@ from mainFiles.ABCCurve import ABCCurve
 class App:
     def __init__(self, root):
         self.root = root
-        self.root.title("Interface com Tkinter")
-        self.root.geometry("600x400")
 
         self.arquivo_selecionado = None
         self.pasta_selecionada = None
@@ -30,21 +28,27 @@ class App:
         self.lbl_iniciar_pesquisa = tk.Label(self.frame_criar_pasta, text="Iniciar nova Pesquisa:", font=("Helvetica", 16))
         self.lbl_iniciar_pesquisa.grid(row=0, column=0, columnspan=3, pady=10)
 
+        # Label com a instrução sobre o arquivo Excel
+        self.lbl_instrucao = tk.Label(self.frame_criar_pasta, text=("Arquivo em excel deve conter todas as colunas na seguinte ordem:\n\n"
+                                                                    "(Item, Discriminação, Unid, Quant, "
+                                                                    "Valor Unit, tValor total,Participação)"), font=("Helvetica", 10))
+        self.lbl_instrucao.grid(row=1, column=0, columnspan=3, pady=5)
+
         # Rótulo para indicar o campo de entrada
         self.lbl_nome_pasta = tk.Label(self.frame_criar_pasta, text="Nome para pasta do edital:")
-        self.lbl_nome_pasta.grid(row=1, column=0, columnspan=3, pady=5)
+        self.lbl_nome_pasta.grid(row=2, column=0, columnspan=3, pady=5)
 
         # Botão para buscar arquivo
         self.btn_buscar_arquivo = tk.Button(self.frame_criar_pasta, text="Buscar Arquivo", command=self.buscar_arquivo)
-        self.btn_buscar_arquivo.grid(row=2, column=0, padx=10)
+        self.btn_buscar_arquivo.grid(row=3, column=0, padx=10)
 
         # Campo de entrada para o nome da pasta
         self.entrada_nome_pasta = tk.Entry(self.frame_criar_pasta, width=30)
-        self.entrada_nome_pasta.grid(row=2, column=1, padx=10)
+        self.entrada_nome_pasta.grid(row=3, column=1, padx=10)
 
         # Botão para criar a pasta
         self.btn_criar_pasta = tk.Button(self.frame_criar_pasta, text="Criar Pasta", command=self.criar_pasta)
-        self.btn_criar_pasta.grid(row=2, column=2, padx=10)
+        self.btn_criar_pasta.grid(row=3, column=2, padx=10)
 
         # Criando o frame para continuar pesquisa em andamento
         self.frame_continuar_pesquisa = tk.Frame(self.root)
@@ -81,7 +85,7 @@ class App:
             if not os.path.exists(caminho_completo):
                 os.makedirs(caminho_completo)
                 messagebox.showinfo("Sucesso","Pasta criada com sucesso!")
-                self.pasta_criada = nome_pasta
+                self.pasta_criada = caminho_completo
             else:
                 messagebox.showinfo("Erro", "Pasta já existe nesse diretório, escolha outro nome!")
         else:
@@ -89,10 +93,10 @@ class App:
     def proximo(self):
         aviso = ""
         if self.arquivo_selecionado and self.pasta_criada:
-            ABCCurve(self.arquivo_selecionado, self.pasta_criada)
-            aviso = "prosseguiu 1"
+            self.arquivo_selecionado = ABCCurve(self.arquivo_selecionado, self.pasta_criada)
+            self.root.event_generate("<<NextFrame>>")
         elif self.pasta_selecionada:
-            aviso = "prosseguiu 2"
+            self.root.event_generate("<<NextFrame>>")
         else:
             if not self.pasta_criada and not self.arquivo_selecionado:
                 aviso = ("Para iniciar uma nova pesquisa:\n * selecione um arquivo"
@@ -100,7 +104,3 @@ class App:
 
         if aviso:
             messagebox.showinfo("Aviso", aviso)
-
-root = tk.Tk()
-app = App(root)
-root.mainloop()
