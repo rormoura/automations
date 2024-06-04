@@ -93,7 +93,7 @@ class App:
     def proximo(self):
         aviso = ""
         if self.arquivo_selecionado and self.pasta_criada:
-            self.arquivo_selecionado = ABCCurve(self.arquivo_selecionado, self.pasta_criada)
+            ABCCurve(self.arquivo_selecionado, self.pasta_criada)
             self.root.event_generate("<<NextFrame>>")
         elif self.pasta_selecionada:
             self.root.event_generate("<<NextFrame>>")
