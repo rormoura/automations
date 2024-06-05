@@ -12,6 +12,8 @@ import analysis.BpsBpsAnalysis as BPS
 import analysis.BpsSiasgAnalysis as SIASG
 import analysis.PanelAnalysis as PANEL
 
+import numpy as np
+
 
 class PossibleAnalysisFilesUI(tk.Frame):
     def __init__(self, master):
@@ -36,7 +38,7 @@ class PossibleAnalysisFilesUI(tk.Frame):
             state="disabled", 
             takefocus=False, 
             width=40, 
-            values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços')
+            values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços','Remover Pesquisa')
         )
         self.possibleAnalysisFiles.grid(row=0, column=2, padx=80)
         self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
@@ -88,6 +90,9 @@ class PossibleAnalysisFilesUI(tk.Frame):
                         self.send_button.config(state='normal')
                 else:
                     break
+        elif selected_value == "Remover Pesquisa":
+            self.medians_dict = {'BPS': np.nan, 'TCU': np.nan, 'TCE': np.nan, 'AIQ': np.nan, 'Chauvenet': np.nan}
+            self.send_button.config(state='normal')
 
 
     def validate_digit(self, P):

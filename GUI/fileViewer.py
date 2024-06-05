@@ -97,13 +97,20 @@ class DataViewerFrame(tk.Frame):
         self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), 'MÉDIA AIQ'] = self.analysisUI.medians_dict['AIQ']
         self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), 'MÉDIA CHAUVENET'] = self.analysisUI.medians_dict['Chauvenet']
         
-        unitary_price = self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), self.data_frame.columns[5]]
-        unitary_price = unitary_price.iloc[0]
-        self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA BPS'] = (unitary_price - self.analysisUI.medians_dict['BPS'])/self.analysisUI.medians_dict['BPS']
-        self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCU'] = (unitary_price - self.analysisUI.medians_dict['TCU'])/self.analysisUI.medians_dict['TCU']
-        self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = (unitary_price - self.analysisUI.medians_dict['TCE'])/self.analysisUI.medians_dict['TCE']
-        self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA AIQ'] = (unitary_price - self.analysisUI.medians_dict['AIQ'])/self.analysisUI.medians_dict['BPS']
-        self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA CHAUVENET'] = (unitary_price - self.analysisUI.medians_dict['Chauvenet'])/self.analysisUI.medians_dict['Chauvenet']
+        if(self.analysisUI.medians_dict['TCE'] == 'nan'):
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA BPS'] = 'nan'
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCU'] = 'nan'
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = 'nan'
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA AIQ'] = 'nan'
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA CHAUVENET'] = 'nan'
+        else:
+            unitary_price = self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), self.data_frame.columns[5]]
+            unitary_price = unitary_price.iloc[0]
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA BPS'] = (unitary_price - self.analysisUI.medians_dict['BPS'])/self.analysisUI.medians_dict['BPS']
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCU'] = (unitary_price - self.analysisUI.medians_dict['TCU'])/self.analysisUI.medians_dict['TCU']
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = (unitary_price - self.analysisUI.medians_dict['TCE'])/self.analysisUI.medians_dict['TCE']
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA AIQ'] = (unitary_price - self.analysisUI.medians_dict['AIQ'])/self.analysisUI.medians_dict['BPS']
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA CHAUVENET'] = (unitary_price - self.analysisUI.medians_dict['Chauvenet'])/self.analysisUI.medians_dict['Chauvenet']
 
         self.data_frame.to_excel(self.file_path, index=False)
         self.refresh_treeview()
@@ -125,7 +132,7 @@ class DataViewerFrame(tk.Frame):
 
         self.tree.tag_configure('oddrow', background='lightgrey')
         self.tree.tag_configure('evenrow', background='white')
-        self.tree.tag_configure('chosen', background='lightgreen')
+        self.tree.tag_configure('chosen', background='lightblue')
 
     def wrap_text(self, text):
         width = 60 if len(text) < 60 else len(text) / 2
