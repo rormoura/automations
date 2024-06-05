@@ -5,7 +5,8 @@ from fileViewer import FileViewerFrame
 class MainApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Interface Principal")
+        self.root.title("Aplicativo de Pesquisa de Preços")
+        self.root.iconbitmap("GUI/tce-icon.ico")
         self.root.geometry("800x600")
 
         self.arquivo_selecionado = None
