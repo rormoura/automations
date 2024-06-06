@@ -29,7 +29,7 @@ class App:
         self.lbl_iniciar_pesquisa.grid(row=0, column=0, columnspan=3, pady=10)
 
         # Label com a instrução sobre o arquivo Excel
-        self.lbl_instrucao = tk.Label(self.frame_criar_pasta, text=("Arquivo em excel deve conter todas as colunas na seguinte ordem:\n\n"
+        self.lbl_instrucao = tk.Label(self.frame_criar_pasta, text=("O arquivo Excel (.xlsx) deve conter SOMENTE o seguinte conteúdo:\n\nAs colunas na seguinte ordem:\n"
                                                                     "(Item, Discriminação, Unid, Quant, "
                                                                     "Valor Unit, Valor Total, Participação)"), font=("Helvetica", 10))
         self.lbl_instrucao.grid(row=1, column=0, columnspan=3, pady=5)
