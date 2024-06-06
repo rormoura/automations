@@ -44,7 +44,7 @@ class PossibleAnalysisFilesUI(tk.Frame):
         self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
         self.possibleAnalysisFiles.bind("<<ComboboxSelected>>", self.callbackComboBox)
 
-        self.send_button = tk.Button(self, text="Enviar Pesquisa de Preço", command=self.handle_send_button, state='disabled')
+        self.send_button = tk.Button(self, text="Confirmar Operação", command=self.handle_send_button, state='disabled')
         self.send_button.grid(row=0, column=3, padx=10)
 
         self.item_entry.bind('<Leave>', self.handle_leave)
