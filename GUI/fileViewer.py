@@ -95,13 +95,19 @@ class DataViewerFrame(tk.Frame):
             self.tree.heading(col, text=col)
             self.tree.column(col, anchor='center', width=100)
 
+        # Insert updated rows
         for i, row in self.data_frame.iterrows():
-            values = [self.wrap_text(str(value)) for value in row]
-            tag = 'oddrow' if i % 2 == 0 else 'evenrow'
+            values = [value for value in row]
+            values[2] = self.wrap_text(str(values[2]))
+            if(str(values[12]) != 'nan'):
+                tag = 'chosen'
+            else:
+                tag = 'oddrow' if i % 2 == 0 else 'evenrow'
             self.tree.insert("", "end", values=values, tags=(tag,))
 
         self.tree.tag_configure('oddrow', background='lightgrey')
         self.tree.tag_configure('evenrow', background='white')
+        self.tree.tag_configure('chosen', background='lightblue')
 
     def item_chosen(self, event): #Obs.: 'self.data_frame[self.data_frame.columns[1]]' DEVE SER a coluna 'ITEM'
         self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), 'MÉDIA BPS'] = self.analysisUI.medians_dict['BPS']

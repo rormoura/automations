@@ -104,7 +104,8 @@ class App:
         else:
             if not self.pasta_criada and not self.arquivo_selecionado:
                 aviso = ("Para iniciar uma nova pesquisa:\n * selecione um arquivo"
-                         " e crie uma nova pasta\n\nPara continuar de onde parou:\n * selecione a pasta da pesquisa em andamento")
+                         " e crie uma nova pasta\n\nPara continuar de onde parou:\n * selecione o arquivo de Análise Completa"
+                          " da pesquisa em andamento")
 
         if aviso:
             messagebox.showinfo("Aviso", aviso)
