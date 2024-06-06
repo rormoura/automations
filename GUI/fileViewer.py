@@ -11,7 +11,7 @@ class FileViewerFrame(tk.Frame):
 
     def init_ui(self):
         self.arquivo_selecionado = None
-        self.pasta_selecionada = None
+        self.analise_selecionada = None
         self.pasta_criada = None
 
         self.frame1 = None
@@ -28,30 +28,42 @@ class FileViewerFrame(tk.Frame):
             self.frame1.grid(row=0, column=0, sticky="nsew")
         self.frame2.grid(row=1, column=0, sticky="ew")
 
-    def update_values(self, arquivo_selecionado, pasta_selecionada, pasta_criada):
+    def update_values(self, arquivo_selecionado, analise_selecionada, pasta_criada):
         self.arquivo_selecionado = arquivo_selecionado
-        self.pasta_selecionada = pasta_selecionada
+        self.analise_selecionada = analise_selecionada
         self.pasta_criada = pasta_criada
 
-        self.open_file_viewer(self.arquivo_selecionado, self.pasta_selecionada)
+        self.open_file_viewer(self.arquivo_selecionado, self.analise_selecionada)
 
-    def open_file_viewer(self, arquivo_selecionado, pasta_selecionada):
+    def open_file_viewer(self, arquivo_selecionado, analise_selecionada):
         if arquivo_selecionado:
             if self.frame1 is not None:
                 self.frame1.destroy()
             self.frame1 = DataViewerFrame(self, arquivo_selecionado)
-            #self.frame1.bind("<<ItemChosen>>", self.frame1.item_chosen)
             self.grid_frames()
             print(arquivo_selecionado)
-        elif pasta_selecionada:
-            print("ainda nao fiz")
+        elif analise_selecionada:
+            if self.frame1 is not None:
+                self.frame1.destroy()
+            self.frame1 = DataViewerFrame(self, analise_selecionada)
+            self.grid_frames()
+            print(analise_selecionada)
 
 class DataViewerFrame(tk.Frame):
     def __init__(self, master, file_path):
         super().__init__(master)
+        self.master = master
         self.file_path = file_path
         self.bind("<<ItemChosen>>", self.item_chosen)
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
+
+        expectated_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA TCE", "MÉDIA AIQ", "MÉDIA CHAUVENET",
+                              "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA TCE", "% MÉDIA AIQ", "% MÉDIA CHAUVENET"]
+
+        if(not (all(column in self.data_frame.columns for column in expectated_columns) and list(self.data_frame.columns[10:20]) == expectated_columns)):
+            tk.messagebox.showinfo("Erro", "Selecione um Arquivo de Análise Completa Formatado Corretamente!")
+            self.master.root.event_generate("<<PreviousFrame>>")
+
         self.analysisUI = analysis.PossibleAnalysisFilesUI(self)
         self.analysisUI.pack(side=tk.TOP, padx=10, pady=10)
 

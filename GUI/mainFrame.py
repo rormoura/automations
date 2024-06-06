@@ -17,7 +17,7 @@ class App:
         self.root = root
 
         self.arquivo_selecionado = None
-        self.pasta_selecionada = None
+        self.analise_selecionada = None
         self.pasta_criada = None
 
         # Criando o frame para o botão de criar pasta e o campo de entrada
@@ -58,8 +58,12 @@ class App:
         self.lbl_continuar_pesquisa = tk.Label(self.frame_continuar_pesquisa, text="Continuar pesquisa em andamento:", font=("Helvetica", 16))
         self.lbl_continuar_pesquisa.pack(pady=10)
 
-        # Botão "Selecionar Pasta"
-        self.btn_continuar = tk.Button(self.frame_continuar_pesquisa, text="Selecionar Pasta", command=self.selecionar_pasta)
+        self.lbl_instrucao_continuar_pesquisa = tk.Label(self.frame_continuar_pesquisa, text=("O arquivo Excel (.xlsx) selecionado deve ser uma Análise Completa"
+                                                                                              " gerada previamente por esse aplicativo"), font=("Helvetica", 10))
+        self.lbl_instrucao_continuar_pesquisa.pack(pady=5)
+
+        # Botão "Selecionar Análise Completa"
+        self.btn_continuar = tk.Button(self.frame_continuar_pesquisa, text="Selecionar Análise Completa", command=self.selecionar_analise)
         self.btn_continuar.pack(pady=10)
 
         # Botão "Próximo"
@@ -71,10 +75,10 @@ class App:
         if filename:
             self.arquivo_selecionado = filename
 
-    def selecionar_pasta(self):
-        if self.pasta_criada is None and self.pasta_selecionada is None:
-            nome_pasta = filedialog.askdirectory(title="Selecione o diretório para criar a pasta")
-            self.pasta_selecionada = nome_pasta
+    def selecionar_analise(self):
+        if self.pasta_criada is None and self.analise_selecionada is None:
+            nome_analise = filedialog.askopenfilename(title="Selecione o arquivo de Análise Completa já criada", filetypes=[("Arquivos Excel", "*.xlsx")])
+            self.analise_selecionada = nome_analise
 
 
     def criar_pasta(self):
@@ -95,7 +99,7 @@ class App:
         if self.arquivo_selecionado and self.pasta_criada:
             self.arquivo_selecionado = ABCCurve(self.arquivo_selecionado, self.pasta_criada)
             self.root.event_generate("<<NextFrame>>")
-        elif self.pasta_selecionada:
+        elif self.analise_selecionada:
             self.root.event_generate("<<NextFrame>>")
         else:
             if not self.pasta_criada and not self.arquivo_selecionado:
