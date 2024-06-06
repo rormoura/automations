@@ -4,8 +4,9 @@ from tkinter import ttk
 import possibleAnalysisFilesui as analysis
 
 class FileViewerFrame(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master):
         super().__init__(master)
+        self.root = master
         self.init_ui()
 
     def init_ui(self):
@@ -150,9 +151,16 @@ class DataViewerFrame(tk.Frame):
 class ControlFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
+        self.master = master
+
+        self.back_button = tk.Button(self, text="Voltar", command=self.go_back)
+        self.back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
         self.finish_button = tk.Button(self, text="Concluir", command=self.finish)
         self.finish_button.pack(side=tk.RIGHT, padx=10, pady=10)
 
     def finish(self):
         self.master.quit()
+
+    def go_back(self):
+        self.master.root.event_generate("<<PreviousFrame>>")

@@ -20,6 +20,7 @@ class MainApp:
         self.app.root.bind("<<NextFrame>>", self.switch_to_frame2)
 
         self.file_viewer_frame = FileViewerFrame(self.frame2)
+        self.file_viewer_frame.root.bind("<<PreviousFrame>>", self.switch_to_frame1)
         self.file_viewer_frame.pack(fill="both", expand=True)
 
         self.frame_navegacao = tk.Frame(self.frame2)
@@ -33,6 +34,9 @@ class MainApp:
 
     def switch_to_frame1(self, event=None):
         self.frame2.pack_forget()
+        self.app.arquivo_selecionado = None
+        self.app.pasta_selecionada = None
+        self.app.pasta_criada = None
         self.frame1.pack(fill="both", expand=True)
 
     def switch_to_frame2(self, event=None):
