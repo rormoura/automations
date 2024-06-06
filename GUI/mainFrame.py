@@ -43,11 +43,12 @@ class App:
         self.btn_buscar_arquivo.grid(row=3, column=0, padx=10)
 
         # Campo de entrada para o nome da pasta
-        self.entrada_nome_pasta = tk.Entry(self.frame_criar_pasta, width=30)
+        self.entrada_nome_pasta = tk.Entry(self.frame_criar_pasta, width=30, state='disabled')
+        self.entrada_nome_pasta.bind('<Leave>', self.handle_leave_entry)
         self.entrada_nome_pasta.grid(row=3, column=1, padx=10)
 
         # Botão para criar a pasta
-        self.btn_criar_pasta = tk.Button(self.frame_criar_pasta, text="Criar Pasta", command=self.criar_pasta)
+        self.btn_criar_pasta = tk.Button(self.frame_criar_pasta, text="Criar Pasta", command=self.criar_pasta, state='disabled')
         self.btn_criar_pasta.grid(row=3, column=2, padx=10)
 
         # Criando o frame para continuar pesquisa em andamento
@@ -70,19 +71,29 @@ class App:
         self.btn_proximo = tk.Button(self.root, text="Próximo", command=self.proximo)
         self.btn_proximo.pack(side=tk.BOTTOM, pady=20)
 
+    def handle_leave_entry(self, event):
+        if(self.entrada_nome_pasta.get() != ""):
+            self.btn_criar_pasta.config(state='normal')
+        else:
+            self.btn_criar_pasta.config(state='disabled')
+
     def buscar_arquivo(self):
         filename = filedialog.askopenfilename(title="Selecione um arquivo", filetypes=[("Arquivos Excel", "*.xlsx")])
         if filename:
             self.arquivo_selecionado = filename
+            self.entrada_nome_pasta.config(state='normal')
+            self.btn_continuar.config(state='disabled')
 
     def selecionar_analise(self):
         if self.pasta_criada is None and self.analise_selecionada is None:
             nome_analise = filedialog.askopenfilename(title="Selecione o arquivo de Análise Completa já criada", filetypes=[("Arquivos Excel", "*.xlsx")])
             self.analise_selecionada = nome_analise
+            self.btn_buscar_arquivo.config(state='disabled')
 
 
     def criar_pasta(self):
         nome_pasta = self.entrada_nome_pasta.get()
+        self.entrada_nome_pasta.delete(0, tk.END)
         pasta_destino = filedialog.askdirectory(title="Selecione o diretório para criar a pasta")
         if nome_pasta and pasta_destino:
             caminho_completo = os.path.join(pasta_destino, nome_pasta)

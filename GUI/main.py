@@ -37,6 +37,10 @@ class MainApp:
         self.app.arquivo_selecionado = None
         self.app.analise_selecionada = None
         self.app.pasta_criada = None
+        self.app.btn_buscar_arquivo.config(state='normal')
+        self.app.entrada_nome_pasta.config(state='disabled')
+        self.app.btn_criar_pasta.config(state='disabled')
+        self.app.btn_continuar.config(state='normal')
         self.frame1.pack(fill="both", expand=True)
 
     def switch_to_frame2(self, event=None):
