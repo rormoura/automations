@@ -55,6 +55,7 @@ class DataViewerFrame(tk.Frame):
         self.master = master
         self.file_path = file_path
         self.bind("<<ItemChosen>>", self.item_chosen)
+        self.bind("<<WrongFileFormat>>", self.wrong_file_format)
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
 
         expectated_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA TCE", "MÉDIA AIQ", "MÉDIA CHAUVENET",
@@ -152,6 +153,9 @@ class DataViewerFrame(tk.Frame):
         self.tree.tag_configure('oddrow', background='lightgrey')
         self.tree.tag_configure('evenrow', background='white')
         self.tree.tag_configure('chosen', background='lightblue')
+
+    def wrong_file_format(self, event):
+        tk.messagebox.showinfo("Erro", "Selecione um Arquivo de Pesquisa Formatado Corretamente!")
 
     def wrap_text(self, text):
         width = 60 if len(text) < 60 else len(text) / 2

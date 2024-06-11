@@ -11,6 +11,12 @@ import methodologies.IQR as IQR
 import methodologies.chauvenet as CHAUVENET
 import utilities.dotAndComma as DOTANDCOMMA
 
+import difflib
+
+def mostrar_diferencas(string1, string2):
+    diff = difflib.ndiff(string1, string2)
+    print('\n'.join(diff))
+
 def bpsSiasgAnalysis(filePath):
 
     path_root = Path(__file__).parents[1]
@@ -23,6 +29,11 @@ def bpsSiasgAnalysis(filePath):
         "AIQ": np.nan,
         "Chauvenet": np.nan
     }
+
+    data_frame_verify = pd.read_csv(filePath, delimiter=";", encoding='latin1')
+    expectated_value = "  Base de dados SIASG"
+    if(data_frame_verify.columns[0][2:] != expectated_value[2:]):
+        return -1
 
     df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
     df['Preço Unitário'] = DOTANDCOMMA.dotAndComma(df['Preço Unitário']).astype(float)

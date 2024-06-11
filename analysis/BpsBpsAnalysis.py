@@ -24,6 +24,11 @@ def bpsBpsAnalysis(filePath):
         "Chauvenet": np.nan
     }
 
+    data_frame_verify = pd.read_csv(filePath, delimiter=";", encoding='latin1')
+    expectated_value = "  Base de dados BPS"
+    if(data_frame_verify.columns[0][2:] != expectated_value[2:]):
+        return -1
+
     df = pd.read_csv(filePath, delimiter=";", skiprows=2, encoding='latin1')
     df[df.columns[18]] = DOTANDCOMMA.dotAndComma(df[df.columns[18]]).astype(float)
     df = df.sort_values(by=[df.columns[18]], ascending=True)
