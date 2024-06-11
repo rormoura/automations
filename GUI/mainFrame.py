@@ -83,12 +83,22 @@ class App:
             self.arquivo_selecionado = filename
             self.entrada_nome_pasta.config(state='normal')
             self.btn_continuar.config(state='disabled')
+        else:
+            self.arquivo_selecionado = None
+            self.btn_buscar_arquivo.config(state='normal')
+            self.entrada_nome_pasta.config(state='disabled')
+            self.btn_continuar.config(state='normal')
 
     def selecionar_analise(self):
-        if self.pasta_criada is None and self.analise_selecionada is None:
-            nome_analise = filedialog.askopenfilename(title="Selecione o arquivo de Análise Completa já criada", filetypes=[("Arquivos Excel", "*.xlsx")])
+        nome_analise = filedialog.askopenfilename(title="Selecione o arquivo de Análise Completa já criada", filetypes=[("Arquivos Excel", "*.xlsx")])
+        if nome_analise != "":
             self.analise_selecionada = nome_analise
             self.btn_buscar_arquivo.config(state='disabled')
+            self.btn_continuar.config(state='normal')
+        else:
+            self.analise_selecionada = None
+            self.btn_buscar_arquivo.config(state='normal')
+            self.btn_continuar.config(state='normal')
 
 
     def criar_pasta(self):
