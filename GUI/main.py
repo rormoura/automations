@@ -1,12 +1,21 @@
 import tkinter as tk
 from mainFrame import App
 from fileViewer import FileViewerFrame
+import os
 
 class MainApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Aplicativo de Pesquisa de Preços")
-        self.root.iconbitmap("GUI/tce-icon.ico")
+
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        icon_path = os.path.join(script_dir, "tce-icon.ico")
+
+        try:
+            self.root.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Erro ao definir o ícone: {e}")
+
         self.root.geometry("800x600")
 
         self.arquivo_selecionado = None
