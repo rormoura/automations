@@ -35,14 +35,15 @@ def ABCCurve(filePath, pasta_criada):
     ABC_curve["% MÉDIA TCE"] = np.nan
     ABC_curve["% MÉDIA AIQ"] = np.nan
     ABC_curve["% MÉDIA CHAUVENET"] = np.nan
+    ABC_curve["OBSERVAÇÕES"] = "Adicionar"
 
     # ABC_curve["ANÁLISE BPS"] = np.nan
     # ABC_curve["ANÁLISE TCU"] = np.nan
     # ABC_curve["ANÁLISE TCE"] = np.nan
-    # ABC_curve["ANÁLISE AIQ"] = np.nan
+    # ABC_curve["ANÁLISE AIQ"] = np.nan 
     # ABC_curve["ANÁLISE CHAUVENET"] = np.nan
 
-    ABC_curve["OBSERVAÇÕES"] = np.nan
+  
 
     caminho_novo_arquivo = os.path.join(pasta_criada, 'Análise Completa.xlsx')
     print(caminho_novo_arquivo)

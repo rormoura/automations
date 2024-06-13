@@ -91,10 +91,13 @@ class DataViewerFrame(tk.Frame):
         self.xscrollbar.pack(side=tk.BOTTOM, fill=tk.X)
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+        self.tree.bind('<Double-1>', self.on_double_click)
+
+
         for col in self.data_frame.columns:
             self.tree.heading(col, text=col)
             self.tree.column(col, anchor='center', width=100)
-
+            
         # Insert updated rows
         for i, row in self.data_frame.iterrows():
             values = [value for value in row]
@@ -108,6 +111,53 @@ class DataViewerFrame(tk.Frame):
         self.tree.tag_configure('oddrow', background='lightgrey')
         self.tree.tag_configure('evenrow', background='white')
         self.tree.tag_configure('chosen', background='lightblue')
+    
+
+    def on_double_click(self, event):
+        # Obter o item clicado
+        item = self.tree.identify_row(event.y)
+        column = self.tree.identify_column(event.x)
+
+        if item:
+            self.open_popup(item)
+    
+    def open_popup(self, item):
+        values = list(self.tree.item(item, 'values'))
+        popup = tk.Toplevel()
+        popup.title("Adicionar Observação")
+
+        label = tk.Label(popup, text="Observação Item: " + str(int(values[1])))
+        label.pack(pady=10)
+
+        # Obter o valor atual da célula
+        current_value = self.tree.item(item, 'values')[20]
+        initial_text = 'Adicionar'
+        is_placeholder = current_value == initial_text
+        if is_placeholder:
+            current_value = ''
+
+        text_box = tk.Text(popup, width=50, height=10)
+        text_box.pack(pady=10)
+        text_box.insert('1.0', current_value)
+        text_box.focus()
+
+        def save_comment():
+            new_value = text_box.get('1.0', tk.END).strip()
+            values = list(self.tree.item(item, 'values'))
+            values[20] = new_value if new_value != '' else initial_text
+
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(values[1]), 'OBSERVAÇÕES'] = str(values[20])
+
+            popup.destroy()
+            self.data_frame.to_excel(self.file_path, index=False)
+            self.refresh_treeview()
+
+        save_button = tk.Button(popup, text="Salvar", command=save_comment)
+        save_button.pack(pady=10)
+
+        popup.transient(self.tree)
+        popup.grab_set()
+        self.tree.wait_window(popup)
 
     def item_chosen(self, event): #Obs.: 'self.data_frame[self.data_frame.columns[1]]' DEVE SER a coluna 'ITEM'
         self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), 'MÉDIA BPS'] = self.analysisUI.medians_dict['BPS']
