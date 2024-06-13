@@ -23,6 +23,12 @@ def panelAnalysis(filesPaths):
     }
     dfs = []
     for filePath in filesPaths:
+
+        data_frame_verify = pd.read_excel(filePath, converters={'Quantidade Ofertada': str})
+        expectated_value = "Tipo painel:"
+        if(data_frame_verify.columns[0][2:] != expectated_value[2:]):
+            return -1
+
         df = pd.read_excel(filePath, skiprows=4, converters={'Quantidade Ofertada': str})
         df['Quantidade Ofertada'] = df['Quantidade Ofertada'].apply(lambda x: x.replace('.', '') if ('.' in x) else x)
         df['Quantidade Ofertada'] = df['Quantidade Ofertada'].astype(float)

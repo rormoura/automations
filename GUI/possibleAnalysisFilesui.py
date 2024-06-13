@@ -62,11 +62,25 @@ class PossibleAnalysisFilesUI(tk.Frame):
                     msgbox = tk.messagebox.askquestion(title='',message='Arquivo selecionado: '+'\n'+file_path+'\n\n'+'Deseja prosseguir?',icon = 'question')
 
                 if(selected_value== "Arquivo .csv modelo BPS"):
-                    self.medians_dict = BPS.bpsBpsAnalysis(file_path)
-                    self.send_button.config(state='normal')
+                    analysis_return = BPS.bpsBpsAnalysis(file_path)
+                    if(analysis_return == -1):
+                        self.possibleAnalysisFiles.config(state="readonly")
+                        self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
+                        self.send_button.config(state='disabled')
+                        self.master.event_generate("<<WrongFileFormat>>", data=selected_value)
+                    else:
+                        self.medians_dict = analysis_return
+                        self.send_button.config(state='normal')
                 if(selected_value== "Arquivo .csv modelo SIASG"):
-                    self.medians_dict = SIASG.bpsSiasgAnalysis(file_path)
-                    self.send_button.config(state='normal')
+                    analysis_return = SIASG.bpsSiasgAnalysis(file_path)
+                    if(analysis_return == -1):
+                        self.possibleAnalysisFiles.config(state="readonly")
+                        self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
+                        self.send_button.config(state='disabled')
+                        self.master.event_generate("<<WrongFileFormat>>", data=selected_value)
+                    else:
+                        self.medians_dict = analysis_return
+                        self.send_button.config(state='normal')
 
         elif selected_value == "Arquivo Excel (.xlsx) modelo Painel de Preços":
             msgbox = 'no'
@@ -86,8 +100,15 @@ class PossibleAnalysisFilesUI(tk.Frame):
                     if(msgbox == 'no'):
                         file_paths_list = []
                     else:
-                        self.medians_dict = PANEL.panelAnalysis(file_paths_list)
-                        self.send_button.config(state='normal')
+                        analysis_return = PANEL.panelAnalysis(file_paths_list)
+                        if(analysis_return == -1):
+                            self.possibleAnalysisFiles.config(state="readonly")
+                            self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
+                            self.send_button.config(state='disabled')
+                            self.master.event_generate("<<WrongFileFormat>>", data=selected_value)
+                        else:
+                            self.medians_dict = analysis_return
+                            self.send_button.config(state='normal')
                 else:
                     break
         elif selected_value == "Remover Pesquisa":
@@ -101,7 +122,7 @@ class PossibleAnalysisFilesUI(tk.Frame):
         else:
             return False
     
-    def print_list(lst):
+    def print_list(self, lst):
         temp_str = ''
         for elem in lst:
             temp_str = temp_str+str(elem)+'\n'

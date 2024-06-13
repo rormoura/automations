@@ -83,13 +83,41 @@ class App:
             self.arquivo_selecionado = filename
             self.entrada_nome_pasta.config(state='normal')
             self.btn_continuar.config(state='disabled')
+            self.btn_cancelar_arquivo = tk.Button(self.frame_criar_pasta, text="Cancelar Escolha", fg="red", font=("Arial", 6, "bold"), command=self.cancelar_arquivo)
+            self.btn_cancelar_arquivo.grid(row=4, column=0, padx=5)
+        else:
+            self.arquivo_selecionado = None
+            self.btn_buscar_arquivo.config(state='normal')
+            self.entrada_nome_pasta.config(state='disabled')
+            self.btn_continuar.config(state='normal')
+
+    def cancelar_arquivo(self):
+        self.arquivo_selecionado = None
+        self.btn_cancelar_arquivo.destroy()
+        self.btn_buscar_arquivo.config(state='normal')
+        self.entrada_nome_pasta.delete(0, tk.END)
+        self.entrada_nome_pasta.config(state='disabled')
+        self.btn_continuar.config(state='normal')
+        self.btn_criar_pasta.config(state='disabled')
 
     def selecionar_analise(self):
-        if self.pasta_criada is None and self.analise_selecionada is None:
-            nome_analise = filedialog.askopenfilename(title="Selecione o arquivo de Análise Completa já criada", filetypes=[("Arquivos Excel", "*.xlsx")])
+        nome_analise = filedialog.askopenfilename(title="Selecione o arquivo de Análise Completa já criada", filetypes=[("Arquivos Excel", "*.xlsx")])
+        if nome_analise != "":
             self.analise_selecionada = nome_analise
             self.btn_buscar_arquivo.config(state='disabled')
+            self.btn_continuar.config(state='normal')
+            self.btn_cancelar_continuar = tk.Button(self.frame_continuar_pesquisa, text="Cancelar Escolha", fg="red", font=("Arial", 6, "bold"), command=self.cancelar_analise)
+            self.btn_cancelar_continuar.pack(pady=5)
+        else:
+            self.analise_selecionada = None
+            self.btn_buscar_arquivo.config(state='normal')
+            self.btn_continuar.config(state='normal')
 
+    def cancelar_analise(self):
+        self.analise_selecionada = None
+        self.btn_cancelar_continuar.destroy()
+        self.btn_buscar_arquivo.config(state='normal')
+        self.btn_continuar.config(state='normal')
 
     def criar_pasta(self):
         nome_pasta = self.entrada_nome_pasta.get()

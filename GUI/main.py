@@ -50,6 +50,7 @@ class MainApp:
         self.app.entrada_nome_pasta.config(state='disabled')
         self.app.btn_criar_pasta.config(state='disabled')
         self.app.btn_continuar.config(state='normal')
+        self.app.btn_cancelar_continuar.destroy()
         self.frame1.pack(fill="both", expand=True)
 
     def switch_to_frame2(self, event=None):
