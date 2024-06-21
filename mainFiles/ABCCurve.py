@@ -8,14 +8,13 @@ from utilities.real import real
 def ABCCurve(filePath, pasta_criada):
     df = pd.read_excel(filePath)
 
-    print("Arquivo em excel contendo apenas a tabela na seguinte ordem\n[ITEM] [DISCRIMINAÇÃO] [UNIDADE] [QUANTIDADE] [VALOR UNITÁRIO] [VALOR TOTAL] [PARTICIPAÇÃO]")
     maxNum = len(df)-1
     ind = np.arange(1, maxNum+1, 1)
-    df[df.columns[3]] = dot(df[df.columns[3]]) #tratamento do "."
-    df[df.columns[4]] = real(df[df.columns[4]]) #tratamento do "R$"
+    df[df.columns[4]] = dot(df[df.columns[4]]) #tratamento do "."
     df[df.columns[5]] = real(df[df.columns[5]]) #tratamento do "R$"
-    df.insert(6,'VTC', dotAndComma(df[df.columns[3]]) * dotAndComma(df[df.columns[4]]))
-    df.insert(7,'PERCENTUAL', df['VTC'] / sum(df['VTC']) * 100)
+    df[df.columns[6]] = real(df[df.columns[6]]) #tratamento do "R$"
+    df.insert(7,'VTC', dotAndComma(df[df.columns[4]]) * dotAndComma(df[df.columns[5]]))
+    df.insert(8,'PERCENTUAL', df['VTC'] / sum(df['VTC']) * 100)
     df['PERCENTUAL'] = df['PERCENTUAL'].round(2)
 
     ABC_curve = df.sort_values(by='VTC', ascending=False)
@@ -46,6 +45,5 @@ def ABCCurve(filePath, pasta_criada):
   
 
     caminho_novo_arquivo = os.path.join(pasta_criada, 'Análise Completa.xlsx')
-    print(caminho_novo_arquivo)
     ABC_curve.to_excel(caminho_novo_arquivo)
     return caminho_novo_arquivo

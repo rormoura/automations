@@ -61,12 +61,12 @@ class DataViewerFrame(tk.Frame):
         expectated_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA TCE", "MÉDIA AIQ", "MÉDIA CHAUVENET",
                               "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA TCE", "% MÉDIA AIQ", "% MÉDIA CHAUVENET"]
 
-        if(not (all(column in self.data_frame.columns for column in expectated_columns) and list(self.data_frame.columns[10:20]) == expectated_columns)):
+        if(not (all(column in self.data_frame.columns for column in expectated_columns) and list(self.data_frame.columns[11:21]) == expectated_columns)):
             tk.messagebox.showinfo("Erro", "Selecione um Arquivo de Análise Completa Formatado Corretamente!")
             self.master.root.event_generate("<<PreviousFrame>>")
 
-        drop_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA AIQ", "MÉDIA CHAUVENET",
-                        "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA AIQ", "% MÉDIA CHAUVENET"]
+        drop_columns = ["ABC", "MÉDIA BPS", "MÉDIA TCU", "MÉDIA AIQ", "MÉDIA CHAUVENET",
+                        "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA AIQ", "% MÉDIA CHAUVENET", self.data_frame.columns[10]]
         self.data_frame_clean = self.data_frame.drop(columns=drop_columns)
 
         self.analysisUI = analysis.PossibleAnalysisFilesUI(self)
@@ -106,8 +106,8 @@ class DataViewerFrame(tk.Frame):
         # Insert updated rows
         for i, row in self.data_frame_clean.iterrows():
             values = [value for value in row]
-            values[2] = self.wrap_text(str(values[2]))
-            if(str(values[10]) != 'nan'):
+            values[1] = self.wrap_text(str(values[1]))
+            if(str(values[9]) != 'nan'):
                 tag = 'chosen'
             else:
                 tag = 'oddrow' if i % 2 == 0 else 'evenrow'
@@ -131,11 +131,11 @@ class DataViewerFrame(tk.Frame):
         popup = tk.Toplevel()
         popup.title("Adicionar Observação")
 
-        label = tk.Label(popup, text="Observação Item: " + str(int(values[1])))
+        label = tk.Label(popup, text="Observação Item: " + str(int(values[0])))
         label.pack(pady=10)
 
         # Obter o valor atual da célula
-        current_value = self.tree.item(item, 'values')[20]
+        current_value = self.tree.item(item, 'values')[11]
         initial_text = 'Adicionar'
         is_placeholder = current_value == initial_text
         if is_placeholder:
@@ -149,10 +149,10 @@ class DataViewerFrame(tk.Frame):
         def save_comment():
             new_value = text_box.get('1.0', tk.END).strip()
             values = list(self.tree.item(item, 'values'))
-            values[20] = new_value if new_value != '' else initial_text
+            values[11] = new_value if new_value != '' else initial_text
 
-            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(values[1]), 'OBSERVAÇÕES'] = str(values[20])
-            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(values[1]), 'OBSERVAÇÕES'] = str(values[20])
+            self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(values[0]), 'OBSERVAÇÕES'] = str(values[11])
+            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[0]] == int(values[0]), 'OBSERVAÇÕES'] = str(values[11])
 
             popup.destroy()
             self.data_frame.to_excel(self.file_path, index=False)
@@ -179,7 +179,7 @@ class DataViewerFrame(tk.Frame):
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA AIQ'] = 'nan'
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA CHAUVENET'] = 'nan'
         else:
-            unitary_price = self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), self.data_frame.columns[5]]
+            unitary_price = self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), self.data_frame.columns[6]]
             unitary_price = unitary_price.iloc[0]
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA BPS'] = ((unitary_price - self.analysisUI.medians_dict['BPS'])/self.analysisUI.medians_dict['BPS'])*100
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCU'] = ((unitary_price - self.analysisUI.medians_dict['TCU'])/self.analysisUI.medians_dict['TCU'])*100
@@ -188,14 +188,14 @@ class DataViewerFrame(tk.Frame):
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA CHAUVENET'] = ((unitary_price - self.analysisUI.medians_dict['Chauvenet'])/self.analysisUI.medians_dict['Chauvenet'])*100
 
         #DAQUI PRA BAIXO FAZ PARTE DO DATAFRAME CLEAN
-        self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), 'MÉDIA TCE'] = self.analysisUI.medians_dict['TCE']
+        self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[0]] == int(self.analysisUI.chosen_item), 'MÉDIA TCE'] = self.analysisUI.medians_dict['TCE']
 
         if(self.analysisUI.medians_dict['TCE'] == 'nan'):
-            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = 'nan'
+            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[0]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = 'nan'
         else:
-            unitary_price = self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), self.data_frame_clean.columns[5]]
+            unitary_price = self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[0]] == int(self.analysisUI.chosen_item), self.data_frame_clean.columns[5]]
             unitary_price = unitary_price.iloc[0]
-            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = ((unitary_price - self.analysisUI.medians_dict['TCE'])/self.analysisUI.medians_dict['TCE'])*100
+            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[0]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = ((unitary_price - self.analysisUI.medians_dict['TCE'])/self.analysisUI.medians_dict['TCE'])*100
         #FINALIZADA PARTE DO DATAFRAME CLEAN
 
         self.data_frame.to_excel(self.file_path, index=False)
@@ -209,8 +209,8 @@ class DataViewerFrame(tk.Frame):
         # Insert updated rows
         for i, row in self.data_frame_clean.iterrows():
             values = [value for value in row]
-            values[2] = self.wrap_text(str(values[2]))
-            if(str(values[10]) != 'nan'):
+            values[1] = self.wrap_text(str(values[1]))
+            if(str(values[9]) != 'nan'):
                 tag = 'chosen'
             else:
                 tag = 'oddrow' if i % 2 == 0 else 'evenrow'
