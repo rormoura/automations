@@ -16,7 +16,7 @@ class MainApp:
         except Exception as e:
             print(f"Erro ao definir o ícone: {e}")
 
-        self.root.geometry("800x600")
+        self.root.geometry("1400x600")
 
         self.arquivo_selecionado = None
         self.analise_selecionada = None

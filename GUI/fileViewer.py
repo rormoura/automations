@@ -65,6 +65,10 @@ class DataViewerFrame(tk.Frame):
             tk.messagebox.showinfo("Erro", "Selecione um Arquivo de Análise Completa Formatado Corretamente!")
             self.master.root.event_generate("<<PreviousFrame>>")
 
+        drop_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA AIQ", "MÉDIA CHAUVENET",
+                        "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA AIQ", "% MÉDIA CHAUVENET"]
+        self.data_frame_clean = self.data_frame.drop(columns=drop_columns)
+
         self.analysisUI = analysis.PossibleAnalysisFilesUI(self)
         self.analysisUI.pack(side=tk.TOP, padx=10, pady=10)
 
@@ -81,7 +85,7 @@ class DataViewerFrame(tk.Frame):
                         background="grey",
                         foreground="black")
 
-        self.tree = ttk.Treeview(self, columns=list(self.data_frame.columns), show="headings")
+        self.tree = ttk.Treeview(self, columns=list(self.data_frame_clean.columns), show="headings")
 
         self.yscrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.tree.yview)
         self.xscrollbar = ttk.Scrollbar(self, orient=tk.HORIZONTAL, command=self.tree.xview)
@@ -95,15 +99,15 @@ class DataViewerFrame(tk.Frame):
         self.tree.bind('<Double-1>', self.on_double_click)
 
 
-        for col in self.data_frame.columns:
+        for col in self.data_frame_clean.columns:
             self.tree.heading(col, text=col)
             self.tree.column(col, anchor='center', width=100)
             
         # Insert updated rows
-        for i, row in self.data_frame.iterrows():
+        for i, row in self.data_frame_clean.iterrows():
             values = [value for value in row]
             values[2] = self.wrap_text(str(values[2]))
-            if(str(values[12]) != 'nan'):
+            if(str(values[10]) != 'nan'):
                 tag = 'chosen'
             else:
                 tag = 'oddrow' if i % 2 == 0 else 'evenrow'
@@ -148,6 +152,7 @@ class DataViewerFrame(tk.Frame):
             values[20] = new_value if new_value != '' else initial_text
 
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(values[1]), 'OBSERVAÇÕES'] = str(values[20])
+            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(values[1]), 'OBSERVAÇÕES'] = str(values[20])
 
             popup.destroy()
             self.data_frame.to_excel(self.file_path, index=False)
@@ -182,6 +187,17 @@ class DataViewerFrame(tk.Frame):
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA AIQ'] = ((unitary_price - self.analysisUI.medians_dict['AIQ'])/self.analysisUI.medians_dict['BPS'])*100
             self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA CHAUVENET'] = ((unitary_price - self.analysisUI.medians_dict['Chauvenet'])/self.analysisUI.medians_dict['Chauvenet'])*100
 
+        #DAQUI PRA BAIXO FAZ PARTE DO DATAFRAME CLEAN
+        self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), 'MÉDIA TCE'] = self.analysisUI.medians_dict['TCE']
+
+        if(self.analysisUI.medians_dict['TCE'] == 'nan'):
+            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = 'nan'
+        else:
+            unitary_price = self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), self.data_frame_clean.columns[5]]
+            unitary_price = unitary_price.iloc[0]
+            self.data_frame_clean.loc[self.data_frame_clean[self.data_frame_clean.columns[1]] == int(self.analysisUI.chosen_item), '% MÉDIA TCE'] = ((unitary_price - self.analysisUI.medians_dict['TCE'])/self.analysisUI.medians_dict['TCE'])*100
+        #FINALIZADA PARTE DO DATAFRAME CLEAN
+
         self.data_frame.to_excel(self.file_path, index=False)
         self.refresh_treeview()
 
@@ -191,10 +207,10 @@ class DataViewerFrame(tk.Frame):
             self.tree.delete(row)
 
         # Insert updated rows
-        for i, row in self.data_frame.iterrows():
+        for i, row in self.data_frame_clean.iterrows():
             values = [value for value in row]
             values[2] = self.wrap_text(str(values[2]))
-            if(str(values[12]) != 'nan'):
+            if(str(values[10]) != 'nan'):
                 tag = 'chosen'
             else:
                 tag = 'oddrow' if i % 2 == 0 else 'evenrow'
