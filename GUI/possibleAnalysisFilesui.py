@@ -28,7 +28,13 @@ class PossibleAnalysisFilesUI(tk.Frame):
         vcmd = (self.register(self.validate_digit), '%P')
 
         self.item_entry = tk.Entry(self, validate='key', validatecommand=vcmd)
-        self.item_entry.grid(row=0, column=1)
+        self.item_entry.grid(row=0, column=1, padx=(0,50))
+
+        self.catmat_entry_label = tk.Label(self, text="Digite o CATMAT do item:")
+        self.catmat_entry_label.grid(row=0, column=2, padx=2)
+
+        self.catmat_entry = tk.Entry(self, validate='key', state='disabled')
+        self.catmat_entry.grid(row=0, column=3)
 
         self.possibleAnalysisFiles = ttk.Combobox(
             self, name="possibleanalysisfiles", 
@@ -40,14 +46,15 @@ class PossibleAnalysisFilesUI(tk.Frame):
             width=40, 
             values=('Arquivo .csv modelo BPS','Arquivo .csv modelo SIASG','Arquivo Excel (.xlsx) modelo Painel de Preços','Remover Pesquisa')
         )
-        self.possibleAnalysisFiles.grid(row=0, column=2, padx=80)
+        self.possibleAnalysisFiles.grid(row=0, column=4, padx=80)
         self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
         self.possibleAnalysisFiles.bind("<<ComboboxSelected>>", self.callbackComboBox)
 
         self.send_button = tk.Button(self, text="Confirmar Operação", command=self.handle_send_button, state='disabled')
-        self.send_button.grid(row=0, column=3, padx=10)
+        self.send_button.grid(row=0, column=5, padx=10)
 
-        self.item_entry.bind('<Leave>', self.handle_leave)
+        self.item_entry.bind('<Leave>', self.handle_leave_item_entry)
+        self.catmat_entry.bind('<Leave>', self.handle_leave_catmat_entry)
 
     def callbackComboBox(self, event=None):
 
@@ -128,8 +135,19 @@ class PossibleAnalysisFilesUI(tk.Frame):
             temp_str = temp_str+str(elem)+'\n'
         return temp_str
 
-    def handle_leave(self, event):
+    def handle_leave_item_entry(self, event):
         if(self.item_entry.get() != ""):
+            self.catmat_entry.config(state="normal")
+            self.possibleAnalysisFiles.config(state="disabled")
+            self.send_button.config(state='disabled')
+        else:
+            self.catmat_entry.config(state="disabled")
+            self.possibleAnalysisFiles.config(state="disabled")
+            self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
+            self.send_button.config(state='disabled')
+
+    def handle_leave_catmat_entry(self, event):
+        if(self.catmat_entry.get() != ""):
             self.possibleAnalysisFiles.config(state="readonly")
             self.send_button.config(state='disabled')
         else:
@@ -143,6 +161,8 @@ class PossibleAnalysisFilesUI(tk.Frame):
         self.send_button.config(state='disabled')
         self.chosen_item = self.item_entry.get()
         self.item_entry.delete(0, tk.END)
+        self.catmat_entry.delete(0, tk.END)
+        self.catmat_entry.config(state="disabled")
         self.master.event_generate("<<ItemChosen>>")
 
 
