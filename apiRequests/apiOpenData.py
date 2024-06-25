@@ -1,12 +1,5 @@
 import requests
 
-# def formatar_preco_reais(valor):
-#     if valor is None:
-#         return 'Preço não disponível'
-#     else:
-#         return f'{valor:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
-        # return f'R$ {valor:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
-
 consultarItemMaterial_base_url = 'https://dadosabertos.compras.gov.br/modulo-pesquisa-preco/1_consultarMaterial'
 
 def obter_itens(codigo_item_catalogo):

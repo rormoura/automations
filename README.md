@@ -41,3 +41,15 @@
 ## Inside Utilities folder
 
 > dotAndComma function: Receives a dataframe column and returns a dataframe column. It assumes that there are no '.' for thousands separator, then replaces any ',' with '.'.
+
+> catmat function: Receives a dataframe column and returns a dataframe column. It handles with the following CATMAT formats:
+
+- ...
+
+> apiOpenData function: Receives a list of dictionaries and returns a dataframe. It removes 
+
+- items with price equal to R$ 0,00
+
+- items that weren't aquired in the past 11 months
+
+- duplicated acquisitions (using idCompra field)
