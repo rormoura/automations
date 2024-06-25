@@ -2,6 +2,7 @@ import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 import possibleAnalysisFilesui as analysis
+import re
 
 class FileViewerFrame(tk.Frame):
     def __init__(self, master):
@@ -56,7 +57,11 @@ class DataViewerFrame(tk.Frame):
         self.file_path = file_path
         self.bind("<<ItemChosen>>", self.item_chosen)
         self.bind("<<WrongFileFormat>>", self.wrong_file_format)
+        self.bind("<<GetCatmat>>", self.get_catmat)
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
+
+        self.data_frame[self.data_frame.columns[3]] = self.data_frame[self.data_frame.columns[3]].astype('str')
+        self.data_frame[self.data_frame.columns[3]] = self.data_frame[self.data_frame.columns[3]].map(lambda x: re.sub(r'\.\d+', '', x))
 
         expectated_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA TCE", "MÉDIA AIQ", "MÉDIA CHAUVENET",
                               "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA TCE", "% MÉDIA AIQ", "% MÉDIA CHAUVENET"]
@@ -235,6 +240,12 @@ class DataViewerFrame(tk.Frame):
                 line = word + ' '
         lines.append(line)
         return '\n'.join(lines)
+    
+    def get_catmat(self, event):
+        respective_catmat = self.data_frame.loc[self.data_frame[self.data_frame.columns[1]] == int(self.analysisUI.item_for_catmat), self.data_frame.columns[3]]
+        respective_catmat = respective_catmat.iloc[0]
+        self.found_catmat = respective_catmat
+        self.analysisUI.event_generate("<<GETCatMat>>")
 
 class ControlFrame(tk.Frame):
     def __init__(self, master):

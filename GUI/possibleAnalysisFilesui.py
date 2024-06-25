@@ -55,6 +55,7 @@ class PossibleAnalysisFilesUI(tk.Frame):
 
         self.item_entry.bind('<Leave>', self.handle_leave_item_entry)
         self.catmat_entry.bind('<Leave>', self.handle_leave_catmat_entry)
+        self.bind('<<GETCatMat>>', self.get_catmat)
 
     def callbackComboBox(self, event=None):
 
@@ -138,16 +139,19 @@ class PossibleAnalysisFilesUI(tk.Frame):
     def handle_leave_item_entry(self, event):
         if(self.item_entry.get() != ""):
             self.catmat_entry.config(state="normal")
+            self.item_for_catmat = self.item_entry.get()
+            self.master.event_generate("<<GetCatmat>>")
             self.possibleAnalysisFiles.config(state="disabled")
             self.send_button.config(state='disabled')
         else:
+            self.catmat_entry.delete(0, tk.END)
             self.catmat_entry.config(state="disabled")
             self.possibleAnalysisFiles.config(state="disabled")
             self.possibleAnalysisFiles.set("Selecionar Pesquisa de Preços")
             self.send_button.config(state='disabled')
 
     def handle_leave_catmat_entry(self, event):
-        if(self.catmat_entry.get() != ""):
+        if(self.catmat_entry.get() != "" and str(self.catmat_entry.get()) != 'nan'):
             self.possibleAnalysisFiles.config(state="readonly")
             self.send_button.config(state='disabled')
         else:
@@ -165,6 +169,10 @@ class PossibleAnalysisFilesUI(tk.Frame):
         self.catmat_entry.config(state="disabled")
         self.master.event_generate("<<ItemChosen>>")
 
+    def get_catmat(self, event):
+        self.catmat_entry.delete(0, tk.END)
+        if(self.master.found_catmat != 'nan'):
+            self.catmat_entry.insert(tk.INSERT, self.master.found_catmat)
 
 if __name__ == "__main__":
     root = tk.Tk()
