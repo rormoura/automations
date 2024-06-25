@@ -2,7 +2,12 @@ import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 import possibleAnalysisFilesui as analysis
-import re
+from utilities.catmat import catmat
+
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
 
 class FileViewerFrame(tk.Frame):
     def __init__(self, master):
@@ -61,7 +66,7 @@ class DataViewerFrame(tk.Frame):
         self.data_frame = pd.read_excel(self.file_path) if self.file_path.endswith('.xlsx') else pd.read_csv(self.file_path)
 
         self.data_frame[self.data_frame.columns[3]] = self.data_frame[self.data_frame.columns[3]].astype('str')
-        self.data_frame[self.data_frame.columns[3]] = self.data_frame[self.data_frame.columns[3]].map(lambda x: re.sub(r'\.\d+', '', x))
+        self.data_frame[self.data_frame.columns[3]] = catmat(self.data_frame[self.data_frame.columns[3]])
 
         expectated_columns = ["MÉDIA BPS", "MÉDIA TCU", "MÉDIA TCE", "MÉDIA AIQ", "MÉDIA CHAUVENET",
                               "% MÉDIA BPS", "% MÉDIA TCU", "% MÉDIA TCE", "% MÉDIA AIQ", "% MÉDIA CHAUVENET"]
