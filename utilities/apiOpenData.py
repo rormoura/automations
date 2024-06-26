@@ -19,7 +19,7 @@ def cleanData(lista_dicionarios):
     df['dataCompra'] = df['dataCompra'].dt.tz_convert('America/Sao_Paulo')
     df['dataCompra'] = df['dataCompra'].dt.strftime('%d/%m/%Y %H:%M:%S')
     df = df.sort_values(by='precoUnitario')
-    df['Unidade'] = df[['nomeUnidadeFornecimento', 'capacidadeUnidadeFornecimento', 'siglaUnidadeMedida']].apply(lambda row: ' '.join([str(x) for x in row if pd.notna(x) and x != 0.0]), axis=1)
+    df['Unidade'] = df[['nomeUnidadeFornecimento', 'capacidadeUnidadeFornecimento', 'siglaUnidadeMedida']].apply(lambda row: ' '.join([str(x) for x in row if pd.notna(x) and x != 0]), axis=1)
 
 
     return df
