@@ -23,3 +23,19 @@ def cleanData(lista_dicionarios):
 
 
     return df
+
+def uniqueItems(df):
+    unique_items = tuple(df['Unidade'].unique().tolist())
+    return unique_items
+
+def unitFilter(df, lista):
+    pd.set_option('display.max_columns', None)
+    df = df[df['Unidade'].isin(lista)]
+    
+    colunas = ['idCompra', 'numeroItemCompra', 'modalidade', 'codigoItemCatalogo',
+                'descricaoItem', 'Unidade','quantidade', 'precoUnitario',
+                'nomeFornecedor','nomeOrgao','nomeUasg','dataCompra']
+    formatted = df[colunas]
+    return (formatted)
+    
+
